@@ -1,4 +1,9 @@
 // ===== MAIN APP =====
+// Login check - redirect to login if not authenticated
+if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.href = 'login.html';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initAllCharts();
     initIndiaMap();
