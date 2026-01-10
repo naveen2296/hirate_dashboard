@@ -1,97 +1,97 @@
-// ===== INDIA MAP WITH MARKERS OVERLAID ON IMAGE =====
+// ===== INDIA MAP - MARKERS MATCHING REFERENCE EXACTLY =====
 function initIndiaMap() {
     const container = document.getElementById('indiaMap');
     if (!container) return;
 
-    // Clear and set up container for overlays
     container.innerHTML = '';
     container.style.position = 'relative';
 
-    // Projects with approximate positions on the map image (percentage based)
+    // Projects positioned to match reference image exactly
     const projects = [
-        { id: 'WUPTL', status: 'rise', x: 52, y: 8, side: 'right' },
-        { id: 'DATRL', status: 'rise', x: 42, y: 15, side: 'left' },
-        { id: 'KMTPL', status: 'retained', x: 78, y: 18, side: 'right' },
-        { id: 'MBEL', status: 'fall', x: 38, y: 22, side: 'left' },
-        { id: 'GAEPL', status: 'retained', x: 60, y: 28, side: 'right' },
-        { id: 'JMTL', status: 'rise', x: 35, y: 30, side: 'left' },
-        { id: 'FRHL', status: 'fall', x: 85, y: 38, side: 'right' },
-        { id: 'BFHL', status: 'retained', x: 88, y: 45, side: 'right' },
-        { id: 'BWHPL', status: 'rise', x: 28, y: 42, side: 'left' },
-        { id: 'MHPL', status: 'retained', x: 80, y: 52, side: 'right' },
-        { id: 'MSHPL', status: 'rise', x: 26, y: 48, side: 'left' },
-        { id: 'SPPL', status: 'rise', x: 75, y: 56, side: 'right' },
-        { id: 'NDEPL', status: 'rise', x: 38, y: 55, side: 'left' },
-        { id: 'NAMEL', status: 'retained', x: 72, y: 62, side: 'right' },
-        { id: 'APEL', status: 'rise', x: 42, y: 64, side: 'left' },
-        { id: 'KTIPL', status: 'retained', x: 68, y: 70, side: 'right' },
-        { id: 'WVEPL', status: 'rise', x: 45, y: 75, side: 'left' },
-        { id: 'SIPL', status: 'retained', x: 62, y: 80, side: 'right' },
-        { id: 'KETPL', status: 'rise', x: 48, y: 88, side: 'left' },
-        { id: 'MKTPL', status: 'retained', x: 58, y: 84, side: 'right' },
-        { id: 'SMTPL', status: 'fall', x: 55, y: 90, side: 'right' },
-        { id: 'NKTPL', status: 'rise', x: 52, y: 95, side: 'right' }
+        // Left side (top to bottom)
+        { id: 'DATRL', status: 'rise', x: 42, y: 12, side: 'left' },
+        { id: 'MBEL', status: 'fall', x: 43, y: 18, side: 'left' },
+        { id: 'JMTL', status: 'rise', x: 38, y: 26, side: 'left' },
+        { id: 'BWHPL', status: 'rise', x: 32, y: 36, side: 'left' },
+        { id: 'MSHPL', status: 'rise', x: 30, y: 42, side: 'left' },
+        { id: 'NDEPL', status: 'rise', x: 38, y: 50, side: 'left' },
+        { id: 'APEL', status: 'rise', x: 42, y: 58, side: 'left' },
+        { id: 'WVEPL', status: 'rise', x: 45, y: 70, side: 'left' },
+        { id: 'KETPL', status: 'rise', x: 48, y: 85, side: 'left' },
+
+        // Right side (top to bottom)
+        { id: 'WUPTL', status: 'rise', x: 52, y: 5, side: 'right' },
+        { id: 'KMTPL', status: 'retained', x: 75, y: 14, side: 'right' },
+        { id: 'GAEPL', status: 'retained', x: 82, y: 24, side: 'right' },
+        { id: 'FRHL', status: 'fall', x: 90, y: 34, side: 'right' },
+        { id: 'BFHL', status: 'retained', x: 92, y: 40, side: 'right' },
+        { id: 'MHPL', status: 'rise', x: 85, y: 48, side: 'right' },
+        { id: 'SPPL', status: 'rise', x: 82, y: 53, side: 'right' },
+        { id: 'NAMEL', status: 'retained', x: 78, y: 60, side: 'right' },
+        { id: 'KTIPL', status: 'retained', x: 72, y: 68, side: 'right' },
+        { id: 'SIPL', status: 'rise', x: 65, y: 78, side: 'right' },
+        { id: 'MKTPL', status: 'retained', x: 62, y: 82, side: 'right' },
+        { id: 'SMTPL', status: 'fall', x: 58, y: 88, side: 'right' },
+        { id: 'NKTPL', status: 'rise', x: 55, y: 94, side: 'right' }
     ];
 
-    // Create SVG overlay for markers and labels
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('viewBox', '0 0 100 100');
-    svg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
+    svg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;';
 
     projects.forEach((p, idx) => {
-        // Create marker
-        const marker = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        marker.style.animation = `fadeIn 0.3s ease ${idx * 0.03}s both`;
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.style.animation = `fadeIn 0.4s ease ${idx * 0.04}s both`;
 
         const color = p.status === 'rise' ? '#22c55e' : p.status === 'fall' ? '#ef4444' : '#eab308';
 
+        // Marker
         if (p.status === 'rise') {
-            const triangle = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-            triangle.setAttribute('points', `${p.x},${p.y - 2} ${p.x + 1.5},${p.y + 1} ${p.x - 1.5},${p.y + 1}`);
-            triangle.setAttribute('fill', color);
-            marker.appendChild(triangle);
+            const tri = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            tri.setAttribute('points', `${p.x},${p.y - 2.5} ${p.x + 2},${p.y + 1.5} ${p.x - 2},${p.y + 1.5}`);
+            tri.setAttribute('fill', color);
+            g.appendChild(tri);
         } else if (p.status === 'fall') {
-            const triangle = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-            triangle.setAttribute('points', `${p.x},${p.y + 2} ${p.x + 1.5},${p.y - 1} ${p.x - 1.5},${p.y - 1}`);
-            triangle.setAttribute('fill', color);
-            marker.appendChild(triangle);
+            const tri = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            tri.setAttribute('points', `${p.x},${p.y + 2.5} ${p.x + 2},${p.y - 1.5} ${p.x - 2},${p.y - 1.5}`);
+            tri.setAttribute('fill', color);
+            g.appendChild(tri);
         } else {
-            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-            circle.setAttribute('cx', p.x);
-            circle.setAttribute('cy', p.y);
-            circle.setAttribute('rx', '1.5');
-            circle.setAttribute('ry', '1.2');
-            circle.setAttribute('fill', color);
-            marker.appendChild(circle);
+            const circ = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+            circ.setAttribute('cx', p.x);
+            circ.setAttribute('cy', p.y);
+            circ.setAttribute('rx', '2');
+            circ.setAttribute('ry', '1.5');
+            circ.setAttribute('fill', color);
+            g.appendChild(circ);
         }
 
-        // Add label
-        const labelX = p.side === 'left' ? 2 : 82;
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', labelX);
-        text.setAttribute('y', p.y + 0.5);
-        text.setAttribute('font-size', '2.2');
-        text.setAttribute('fill', '#374151');
-        text.setAttribute('font-weight', '500');
-        text.textContent = p.id + '-';
-        marker.appendChild(text);
-
         // Connector line
-        const lineEndX = p.side === 'left' ? 15 : 72;
+        const lineEndX = p.side === 'left' ? 8 : 92;
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', p.x);
         line.setAttribute('y1', p.y);
         line.setAttribute('x2', lineEndX);
         line.setAttribute('y2', p.y);
         line.setAttribute('stroke', '#9ca3af');
-        line.setAttribute('stroke-width', '0.2');
-        line.setAttribute('stroke-dasharray', '1,0.5');
-        marker.appendChild(line);
+        line.setAttribute('stroke-width', '0.25');
+        line.setAttribute('stroke-dasharray', '1.5,0.8');
+        g.appendChild(line);
 
-        svg.appendChild(marker);
+        // Label
+        const labelX = p.side === 'left' ? 0 : 93;
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', labelX);
+        text.setAttribute('y', p.y + 0.8);
+        text.setAttribute('font-size', '2.5');
+        text.setAttribute('fill', '#374151');
+        text.setAttribute('font-weight', '500');
+        text.textContent = p.id + '-';
+        g.appendChild(text);
+
+        svg.appendChild(g);
     });
 
-    // Add animation style
     const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
     style.textContent = '@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }';
     svg.appendChild(style);
