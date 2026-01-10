@@ -1,4 +1,4 @@
-/* ===== HIRATE DASHBOARD - CLEAN PROFESSIONAL DESIGN ===== */
+/* ===== HIRATE DASHBOARD - OPTIMIZED LAYOUT ===== */
 :root {
     --primary-green: #22c55e;
     --green-dark: #16a34a;
@@ -31,7 +31,10 @@ body {
     color: var(--text-dark);
 }
 
-/* DASHBOARD CONTAINER */
+.bg-shape {
+    display: none;
+}
+
 .dashboard-container {
     display: flex;
     flex-direction: column;
@@ -39,12 +42,12 @@ body {
     overflow: hidden;
 }
 
-/* HEADER - GREEN GRADIENT */
+/* HEADER */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 16px;
+    padding: 6px 16px;
     background: linear-gradient(135deg, var(--primary-green) 0%, var(--green-dark) 100%);
     color: white;
     flex-shrink: 0;
@@ -64,14 +67,24 @@ body {
 }
 
 .logo-star {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
+    animation: starRotate 20s linear infinite;
+}
+
+@keyframes starRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .star-icon {
     width: 100%;
     height: 100%;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .title-container {
@@ -81,7 +94,7 @@ body {
 
 .main-title {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: white;
 }
@@ -92,7 +105,7 @@ body {
     width: fit-content;
     background: rgba(255, 255, 255, 0.2);
     color: white;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
     border-radius: 10px;
 }
@@ -100,75 +113,72 @@ body {
 .company-logos {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .company-logo {
-    height: 28px;
+    height: 24px;
     background: white;
-    padding: 3px 6px;
+    padding: 2px 5px;
     border-radius: 4px;
 }
 
 .logo-star-img {
-    height: 32px;
+    height: 28px;
 }
 
 .logo-highways {
-    height: 24px;
+    height: 20px;
 }
 
 .logo-tech {
-    height: 28px;
+    height: 24px;
 }
 
 .live-indicator {
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
+    gap: 4px;
+    padding: 3px 8px;
     background: rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
 .pulse-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     background: #ef4444;
     border-radius: 50%;
-    animation: pulse 1.5s infinite;
+    animation: pulse 1s infinite;
 }
 
 @keyframes pulse {
 
     0%,
     100% {
+        transform: scale(1);
         opacity: 1;
     }
 
     50% {
-        opacity: 0.5;
+        transform: scale(1.3);
+        opacity: 0.7;
     }
 }
 
 .live-text {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 700;
     color: white;
 }
 
-/* BACKGROUND SHAPES - SUBTLE */
-.bg-shape {
-    display: none;
-}
-
-/* MAIN GRID */
+/* MAIN GRID - ADJUSTED PROPORTIONS */
 .dashboard-main {
     display: grid;
-    grid-template-columns: 145px 1fr 310px;
-    gap: 8px;
+    grid-template-columns: 135px 1fr 340px;
+    gap: 6px;
     flex: 1;
-    padding: 8px;
+    padding: 6px;
     min-height: 0;
     overflow: hidden;
 }
@@ -177,34 +187,47 @@ body {
 .glass-card {
     background: var(--card-bg);
     border-radius: 8px;
-    border: 1px solid rgba(34, 197, 94, 0.15);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(34, 197, 94, 0.12);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 /* SIDEBAR */
 .sidebar {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     overflow-y: auto;
 }
 
 .stat-card {
-    padding: 10px;
+    padding: 8px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
 }
 
 .stat-icon {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--primary-green);
-    border-radius: 8px;
+    border-radius: 6px;
     color: white;
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+    }
 }
 
 .stat-icon.warning {
@@ -212,8 +235,8 @@ body {
 }
 
 .stat-icon svg {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
 }
 
 .stat-content {
@@ -225,34 +248,47 @@ body {
 
 .stat-number {
     font-family: 'Outfit', sans-serif;
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 800;
     color: var(--primary-green);
+    animation: numberGlow 2s ease-in-out infinite;
+}
+
+@keyframes numberGlow {
+
+    0%,
+    100% {
+        text-shadow: 0 0 5px rgba(34, 197, 94, 0.3);
+    }
+
+    50% {
+        text-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+    }
 }
 
 .stat-unit {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--primary-green);
 }
 
 .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
-    line-height: 1.3;
+    line-height: 1.2;
 }
 
 .categories-card,
 .legend-card {
-    padding: 10px;
+    padding: 8px;
 }
 
 .card-title {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-dark);
-    margin-bottom: 8px;
-    padding-left: 8px;
+    margin-bottom: 6px;
+    padding-left: 6px;
     border-left: 3px solid var(--primary-green);
 }
 
@@ -260,11 +296,11 @@ body {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
 }
 
 .category-list li {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
     padding: 2px 0;
 }
@@ -272,26 +308,26 @@ body {
 .cat-num {
     color: var(--primary-green);
     font-weight: 600;
-    margin-right: 4px;
+    margin-right: 3px;
 }
 
 .legend-items {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
 }
 
 .legend-item {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
+    gap: 5px;
+    font-size: 0.7rem;
     color: var(--text-secondary);
 }
 
 .legend-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
 }
 
@@ -311,45 +347,52 @@ body {
 .center-content {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
     min-height: 0;
     overflow: hidden;
 }
 
-/* TOP ROW - 3 small charts */
+/* TOP ROW - SHRUNK CONDITION RATING */
 .top-row {
     display: grid;
-    grid-template-columns: 110px 130px 1fr;
-    gap: 6px;
+    grid-template-columns: 100px 115px 1fr;
+    gap: 5px;
     flex-shrink: 0;
 }
 
-/* MIDDLE ROW - Issues and TAR */
+/* MIDDLE ROW */
 .middle-row {
     display: grid;
-    grid-template-columns: 1fr 170px;
-    gap: 6px;
+    grid-template-columns: 1fr 155px;
+    gap: 5px;
     flex-shrink: 0;
 }
 
-/* CHART CARD */
+/* BOTTOM ROW - HEATMAP + TARM SIDE BY SIDE */
+.bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 180px;
+    gap: 5px;
+    flex: 1;
+    min-height: 0;
+}
+
 .chart-card {
-    padding: 8px;
+    padding: 6px;
     overflow: hidden;
 }
 
-/* CHART CONTAINERS */
 .chart-container {
     position: relative;
     width: 100%;
 }
 
 .chart-container.small {
-    height: 70px;
+    height: 55px;
 }
 
 .chart-container.medium {
-    height: 100px;
+    height: 85px;
 }
 
 /* GAUGE */
@@ -357,30 +400,30 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px;
+    padding: 6px;
 }
 
 .gauge-container {
     position: relative;
-    width: 90px;
-    height: 50px;
+    width: 80px;
+    height: 45px;
 }
 
 .gauge-container canvas {
-    width: 90px !important;
-    height: 45px !important;
+    width: 80px !important;
+    height: 40px !important;
 }
 
 .gauge-value {
     position: absolute;
-    bottom: 5px;
+    bottom: 4px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .gauge-number {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #8bc34a;
 }
@@ -389,9 +432,8 @@ body {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     color: var(--text-muted);
-    margin-top: 2px;
 }
 
 /* LEGENDS */
@@ -399,15 +441,15 @@ body {
 .issues-legend,
 .tarm-legend {
     display: flex;
-    gap: 8px;
-    margin-bottom: 4px;
+    gap: 6px;
+    margin-bottom: 3px;
     flex-wrap: wrap;
 }
 
 .legend-tag {
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.65rem;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.6rem;
     font-weight: 600;
 }
 
@@ -434,18 +476,8 @@ body {
     color: var(--accent-red);
 }
 
-.legend-tag.monthly {
-    color: var(--text-dark);
-}
-
-.legend-tag.cumulative {
-    color: var(--primary-green);
-}
-
-/* HEATMAP */
+/* HEATMAP - COMPACT */
 .heatmap-card {
-    flex: 1;
-    min-height: 0;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -463,15 +495,28 @@ body {
 }
 
 .heatmap-cell {
-    padding: 4px 2px;
+    padding: 2px 1px;
     text-align: center;
-    min-width: 58px;
+    min-width: 48px;
     border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: cellFade 0.5s ease both;
+}
+
+@keyframes cellFade {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .heatmap-name {
     display: block;
-    font-size: 0.55rem;
+    font-size: 0.5rem;
     font-weight: 600;
     color: #000;
     white-space: nowrap;
@@ -481,7 +526,7 @@ body {
 
 .heatmap-value {
     display: block;
-    font-size: 0.65rem;
+    font-size: 0.55rem;
     font-weight: 700;
     color: #000;
 }
@@ -506,23 +551,29 @@ body {
     background: #ef5350;
 }
 
-/* RIGHT CONTENT */
+/* TARM - FITS BESIDE HEATMAP */
+.tarm-card {
+    display: flex;
+    flex-direction: column;
+}
+
+/* RIGHT CONTENT - ENLARGED MAP & RANKINGS */
 .right-content {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
     min-height: 0;
     overflow: hidden;
 }
 
-/* MAP CARD */
+/* MAP - LARGER */
 .map-card {
     flex: 0 0 auto;
 }
 
 .map-container {
     width: 100%;
-    height: 180px;
+    height: 200px;
     background: url('india-map.png') center/contain no-repeat;
     border-radius: 6px;
     position: relative;
@@ -531,15 +582,15 @@ body {
 .map-legend {
     display: flex;
     justify-content: center;
-    gap: 16px;
-    margin-top: 6px;
+    gap: 14px;
+    margin-top: 5px;
 }
 
 .map-legend-item {
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 0.7rem;
+    gap: 4px;
+    font-size: 0.65rem;
     color: var(--text-secondary);
 }
 
@@ -548,8 +599,8 @@ body {
 }
 
 .marker.retained {
-    width: 12px;
-    height: 10px;
+    width: 10px;
+    height: 8px;
     background: var(--accent-yellow);
     border-radius: 50%;
 }
@@ -557,25 +608,20 @@ body {
 .marker.rise {
     width: 0;
     height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-bottom: 10px solid var(--primary-green);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 9px solid var(--primary-green);
 }
 
 .marker.fall {
     width: 0;
     height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 10px solid var(--accent-red);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 9px solid var(--accent-red);
 }
 
-/* TARM CARD */
-.tarm-card {
-    flex: 0 0 auto;
-}
-
-/* PYRAMID/RANKINGS */
+/* PYRAMID/RANKINGS - ENLARGED */
 .ranking-card {
     flex: 1;
     min-height: 0;
@@ -587,18 +633,18 @@ body {
 .ranking-header {
     display: flex;
     justify-content: space-around;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
     color: var(--text-secondary);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
 .ranking-subheader {
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
-    font-size: 0.65rem;
-    margin-bottom: 4px;
+    gap: 10px;
+    font-size: 0.6rem;
+    margin-bottom: 3px;
 }
 
 .legend-black {
@@ -621,15 +667,28 @@ body {
 .pyramid-row {
     display: flex;
     align-items: center;
-    gap: 4px;
-    min-height: 13px;
+    gap: 3px;
+    min-height: 12px;
     width: 100%;
+    animation: slideIn 0.4s ease both;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 .pyramid-values {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     font-weight: 600;
-    min-width: 50px;
+    min-width: 45px;
     text-align: right;
 }
 
@@ -639,17 +698,25 @@ body {
 
 .pyramid-values .cumulative {
     color: var(--primary-green);
-    margin-left: 3px;
+    margin-left: 2px;
 }
 
 .pyramid-bar {
-    height: 11px;
+    height: 10px;
     border-radius: 2px;
-    transition: all 0.2s;
+    transition: all 0.3s;
+    animation: barGrow 0.8s ease both;
+}
+
+@keyframes barGrow {
+    from {
+        width: 0 !important;
+    }
 }
 
 .pyramid-bar:hover {
-    filter: brightness(1.1);
+    filter: brightness(1.15);
+    transform: scaleY(1.2);
 }
 
 .pyramid-row.grade-a .pyramid-bar {
@@ -665,15 +732,15 @@ body {
 }
 
 .pyramid-label {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     font-weight: 500;
     color: var(--text-secondary);
     white-space: nowrap;
 }
 
 .grade-badge {
-    font-size: 0.55rem;
-    margin-left: 2px;
+    font-size: 0.5rem;
+    margin-left: 1px;
     font-weight: 700;
 }
 
@@ -693,10 +760,10 @@ body {
 .dashboard-footer {
     display: flex;
     justify-content: space-between;
-    padding: 6px 16px;
+    padding: 5px 16px;
     background: linear-gradient(135deg, var(--primary-green) 0%, var(--green-dark) 100%);
     color: white;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     flex-shrink: 0;
 }
 
@@ -704,7 +771,6 @@ body {
     font-weight: 500;
 }
 
-/* ANIMATIONS */
 .animate-count {
     transition: all 0.3s;
 }
