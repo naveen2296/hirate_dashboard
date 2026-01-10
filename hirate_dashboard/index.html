@@ -4,196 +4,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiRATE Overall Summary | Central Monitoring System</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>HiRATE Overall Summary</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <script>
-        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
-            window.location.href = 'login.html';
-        }
-    </script>
+    <script>if (sessionStorage.getItem('isLoggedIn') !== 'true') window.location.href = 'login.html';</script>
 </head>
 
 <body>
-    <div class="dashboard-container">
-        <!-- Header -->
-        <header class="dashboard-header glass-card">
+    <div class="app">
+        <!-- HEADER -->
+        <header class="header">
             <div class="header-left">
-                <div class="logo-container">
-                    <div class="logo-star">
-                        <svg viewBox="0 0 100 100" class="star-icon">
-                            <polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35"
-                                fill="url(#starGrad)" />
-                            <defs>
-                                <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#4ade80" />
-                                    <stop offset="100%" style="stop-color:#22c55e" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <div class="title-container">
-                        <h1 class="main-title">HiRATE Overall Summary – NOVEMBER 2025</h1>
-                    </div>
-                </div>
+                <div class="logo">★</div>
+                <h1>HiRATE Overall Summary – NOVEMBER 2025</h1>
             </div>
             <div class="header-right">
-                <div class="company-logos">
-                    <img src="logo-star.png" alt="HiRATE" class="company-logo logo-star-img">
-                    <img src="logo-highways.png" alt="Cube Highways" class="company-logo logo-highways">
-                    <img src="logo-tech.png" alt="Cube Tech" class="company-logo logo-tech">
-                </div>
-                <div class="live-indicator">
-                    <span class="pulse-dot"></span>
-                    <span class="live-text">LIVE</span>
-                </div>
+                <img src="logo-highways.png" alt="Cube" class="company-logo">
+                <div class="live-badge"><span class="dot"></span>LIVE</div>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="dashboard-main">
-            <!-- SIDEBAR -->
+        <!-- MAIN GRID -->
+        <main class="main-grid">
+            <!-- LEFT SIDEBAR -->
             <aside class="sidebar">
-                <div class="stat-card glass-card">
-                    <div class="stat-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                    </div>
-                    <div class="stat-content">
-                        <span class="stat-number">10</span><span class="stat-unit">%</span>
-                    </div>
-                    <span class="stat-label">of audited for all Divisions since September 2025</span>
+                <div class="stat-box">
+                    <div class="stat-icon green">👥</div>
+                    <div class="stat-value">10<span>%</span></div>
+                    <div class="stat-desc">of audited for all Divisions since September 2025</div>
                 </div>
-                <div class="stat-card glass-card">
-                    <div class="stat-icon warning">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10" />
-                            <line x1="12" y1="8" x2="12" y2="12" />
-                            <line x1="12" y1="16" x2="12.01" y2="16" />
-                        </svg>
-                    </div>
-                    <div class="stat-content">
-                        <span class="stat-number">12</span><span class="stat-unit">k+</span>
-                    </div>
-                    <span class="stat-label">issues found upon 1lakh+ parameters</span>
+                <div class="stat-box">
+                    <div class="stat-icon orange">⚠</div>
+                    <div class="stat-value">12<span>k+</span></div>
+                    <div class="stat-desc">issues found upon 1lakh+ parameters</div>
                 </div>
-                <div class="categories-card glass-card">
-                    <h3 class="card-title">Categories</h3>
-                    <ol class="category-list">
-                        <li><span class="cat-num">1.</span> Roadways</li>
-                        <li><span class="cat-num">2.</span> Road signage and furniture</li>
-                        <li><span class="cat-num">3.</span> Structures</li>
-                        <li><span class="cat-num">4.</span> ATMS</li>
-                        <li><span class="cat-num">5.</span> TMS</li>
-                        <li><span class="cat-num">6.</span> Landscaping</li>
-                        <li><span class="cat-num">7.</span> Project facilities</li>
+                <div class="info-box">
+                    <h4>Categories</h4>
+                    <ol>
+                        <li>Roadways</li>
+                        <li>Road signage and furniture</li>
+                        <li>Structures</li>
+                        <li>ATMS</li>
+                        <li>TMS</li>
+                        <li>Landscaping</li>
+                        <li>Project facilities</li>
                     </ol>
                 </div>
-                <div class="legend-card glass-card">
-                    <div class="legend-items">
-                        <div class="legend-item"><span class="legend-dot cc"></span><span>CC - Cleanliness</span></div>
-                        <div class="legend-item"><span class="legend-dot fc"></span><span>FC - Functional</span></div>
-                        <div class="legend-item"><span class="legend-dot pc"></span><span>PC - Physical</span></div>
-                    </div>
+                <div class="info-box legend-box">
+                    <div><span class="dot green"></span>CC - Cleanliness</div>
+                    <div><span class="dot purple"></span>FC - Functional</div>
+                    <div><span class="dot red"></span>PC - Physical</div>
                 </div>
             </aside>
 
-            <!-- CENTER CONTENT -->
-            <div class="center-content">
-                <!-- TOP ROW -->
-                <div class="top-row">
-                    <div class="chart-card glass-card gauge-card">
-                        <h3 class="card-title">Overall Project Rating</h3>
-                        <div class="gauge-container">
+            <!-- CENTER AREA -->
+            <section class="center">
+                <!-- ROW 1: Gauge + HO + Condition -->
+                <div class="row1">
+                    <div class="card gauge-card">
+                        <h3>Overall Project Rating</h3>
+                        <div class="gauge-wrap">
                             <canvas id="gaugeChart"></canvas>
-                            <div class="gauge-value"><span class="gauge-number">8.94</span></div>
+                            <div class="gauge-val">8.94</div>
                         </div>
-                        <div class="gauge-labels"><span>0.00</span><span>10.00</span></div>
+                        <div class="gauge-range"><span>0.00</span><span>10.00</span></div>
                     </div>
-                    <div class="chart-card glass-card">
-                        <h3 class="card-title">Project HO Rating by Month</h3>
-                        <div class="chart-container"><canvas id="hoRatingChart"></canvas></div>
+                    <div class="card ho-card">
+                        <h3>Project HO Rating by Month</h3>
+                        <div class="chart-wrap"><canvas id="hoChart"></canvas></div>
                     </div>
-                    <div class="chart-card glass-card">
-                        <h3 class="card-title">Condition Rating</h3>
-                        <div class="condition-legend">
-                            <span class="legend-tag cc">●CC</span>
-                            <span class="legend-tag fc">●FC</span>
-                            <span class="legend-tag pc">●PC</span>
+                    <div class="card condition-card">
+                        <h3>Condition Rating</h3>
+                        <div class="legend-row">
+                            <span class="tag green">●CC</span>
+                            <span class="tag purple">●FC</span>
+                            <span class="tag red">●PC</span>
                         </div>
-                        <div class="chart-container"><canvas id="conditionChart"></canvas></div>
+                        <div class="chart-wrap"><canvas id="conditionChart"></canvas></div>
                     </div>
                 </div>
 
-                <!-- SUM OF ISSUES ROW -->
-                <div class="chart-card glass-card issues-card">
-                    <h3 class="card-title">Sum of Issues</h3>
-                    <div class="issues-legend">
-                        <span class="legend-tag issues">● Sum of Issues</span>
-                        <span class="legend-tag average">● Average Issues</span>
+                <!-- ROW 2: Sum of Issues -->
+                <div class="card issues-card">
+                    <h3>Sum of Issues</h3>
+                    <div class="legend-row">
+                        <span class="tag green">● Sum of Issues</span>
+                        <span class="tag red">● Average Issues</span>
                     </div>
-                    <div class="chart-container issues-chart"><canvas id="issuesChart"></canvas></div>
+                    <div class="chart-wrap issues-wrap"><canvas id="issuesChart"></canvas></div>
                 </div>
 
-                <!-- HEATMAP ROW -->
-                <div class="chart-card glass-card heatmap-card">
-                    <h3 class="card-title">Parameter Ratings Heatmap</h3>
-                    <div id="heatmapContainer"></div>
+                <!-- ROW 3: Heatmap (compact) -->
+                <div class="card heatmap-card">
+                    <h3>Parameter Ratings Heatmap</h3>
+                    <div id="heatmap"></div>
                 </div>
-            </div>
+            </section>
 
-            <!-- RIGHT CONTENT -->
-            <div class="right-content">
-                <!-- MAP CARD -->
-                <div class="chart-card glass-card map-card">
-                    <h3 class="card-title">Rise & fall map based on respective own benchmarks</h3>
-                    <div class="map-container" id="indiaMap"></div>
+            <!-- RIGHT AREA -->
+            <aside class="right-col">
+                <!-- Map -->
+                <div class="card map-card">
+                    <h3>Rise & fall map based on respective own benchmarks</h3>
+                    <div class="map-wrap" id="indiaMap"></div>
                     <div class="map-legend">
-                        <div class="map-legend-item"><span class="marker retained"></span><span>RETAINED</span></div>
-                        <div class="map-legend-item"><span class="marker rise"></span><span>RISE</span></div>
-                        <div class="map-legend-item"><span class="marker fall"></span><span>FALL</span></div>
+                        <span><i class="retained"></i>RETAINED</span>
+                        <span><i class="rise"></i>RISE</span>
+                        <span><i class="fall"></i>FALL</span>
                     </div>
                 </div>
-
-                <!-- TARM CARD -->
-                <div class="chart-card glass-card tarm-card">
-                    <h3 class="card-title">TARM Rating by Category</h3>
-                    <div class="chart-container"><canvas id="tarmChart"></canvas></div>
+                <!-- TARM -->
+                <div class="card tarm-card">
+                    <h3>TARM Rating by Category</h3>
+                    <div class="chart-wrap tarm-wrap"><canvas id="tarmChart"></canvas></div>
                 </div>
-
-                <!-- TAR COUNT -->
-                <div class="chart-card glass-card">
-                    <h3 class="card-title">TAR Count of Ratings</h3>
-                    <div class="chart-container"><canvas id="tarChart"></canvas></div>
+                <!-- TAR Count -->
+                <div class="card tar-card">
+                    <h3>TAR Count of Ratings</h3>
+                    <div class="chart-wrap tar-wrap"><canvas id="tarChart"></canvas></div>
                 </div>
-
-                <!-- RANKINGS CARD -->
-                <div class="chart-card glass-card ranking-card">
-                    <h3 class="card-title">Project Rankings</h3>
-                    <div class="ranking-header">
+                <!-- Rankings -->
+                <div class="card rankings-card">
+                    <h3>Project Rankings</h3>
+                    <div class="rankings-header">
                         <span>A Grade</span><span>B Grade</span><span>C Grade</span>
                     </div>
-                    <div class="ranking-subheader">
-                        <span class="legend-black">*Monthly Rating</span>
-                        <span class="legend-green">*Cumulative Rating</span>
+                    <div class="rankings-legend">
+                        <span>*Monthly Rating</span>
+                        <span class="green">*Cumulative Rating</span>
                     </div>
-                    <div id="pyramidContainer" class="pyramid-container"></div>
+                    <div id="pyramid"></div>
                 </div>
-            </div>
+            </aside>
         </main>
 
-        <!-- Footer -->
-        <footer class="dashboard-footer glass-card">
+        <!-- FOOTER -->
+        <footer class="footer">
             <span>© 2025 Cube Highways Technologies. All rights reserved.</span>
             <span>Last Updated: <span id="lastUpdated"></span></span>
         </footer>
