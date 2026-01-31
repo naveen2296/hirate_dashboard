@@ -7,7 +7,11 @@ export const metadata: Metadata = {
   keywords: ["HiRATE", "Dashboard", "Performance", "Analytics", "Infrastructure", "Cube Highways"],
   authors: [{ name: "Cube Highways Technologies" }],
   icons: {
-    icon: "/logo-star.png",
+    icon: [
+      { url: "/logo-star.png", type: "image/png" },
+    ],
+    shortcut: "/logo-star.png",
+    apple: "/logo-star.png",
   },
 };
 

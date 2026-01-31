@@ -75,13 +75,22 @@ export function TARMCategoryChart() {
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            transition={{
+                duration: 0.6,
+                delay: 0.3,
+                ease: [0.25, 0.46, 0.45, 0.94] // Custom easing
+            }}
             className="glass-card p-3 h-full flex flex-col"
         >
-            {/* Header with Legend */}
-            <div className="flex items-center justify-between mb-2">
+            {/* Header with Legend - slide in from left */}
+            <motion.div
+                className="flex items-center justify-between mb-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.4 }}
+            >
                 <h3 className="text-sm font-semibold text-white/90">TARM Rating by Category</h3>
                 <div className="flex items-center gap-3 text-[10px]">
                     <div className="flex items-center gap-1">
@@ -97,7 +106,7 @@ export function TARMCategoryChart() {
                         <span className="text-white/60">Division Avg</span>
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             <div className="flex-1">
                 <svg
@@ -128,25 +137,38 @@ export function TARMCategoryChart() {
 
                         return (
                             <g key={data.category}>
-                                {/* Bar */}
+                                {/* Bar with spring animation */}
                                 <motion.rect
                                     x={x}
                                     y={y}
                                     width={barWidth}
                                     height={barHeight}
-                                    rx={4}
-                                    ry={4}
+                                    rx={6}
+                                    ry={6}
                                     fill={isAboveBenchmark ? 'url(#greenBarGrad)' : 'url(#redBarGrad)'}
-                                    initial={{ height: 0, y: baseY }}
-                                    animate={{ height: barHeight, y: y }}
-                                    transition={{ duration: 0.8, delay: i * 0.07, ease: 'easeOut' }}
+                                    initial={{ height: 0, y: baseY, opacity: 0 }}
+                                    animate={{ height: barHeight, y: y, opacity: 1 }}
+                                    transition={{
+                                        height: { type: "spring", stiffness: 100, damping: 15, delay: i * 0.1 },
+                                        y: { type: "spring", stiffness: 100, damping: 15, delay: i * 0.1 },
+                                        opacity: { duration: 0.3, delay: i * 0.1 }
+                                    }}
+                                    whileHover={{
+                                        scale: 1.02,
+                                        filter: "brightness(1.1)",
+                                        transition: { duration: 0.2 }
+                                    }}
                                 />
 
-                                {/* Delta % with trending icon above bar value */}
+                                {/* Delta % with trending icon - slide up animation */}
                                 <motion.g
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.6 + i * 0.07 }}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{
+                                        delay: 0.5 + i * 0.1,
+                                        duration: 0.4,
+                                        ease: "easeOut"
+                                    }}
                                 >
                                     {/* Trending icon */}
                                     <g transform={`translate(${getX(i) - 28}, ${y - 26})`}>
@@ -183,67 +205,84 @@ export function TARMCategoryChart() {
                                     </text>
                                 </motion.g>
 
-                                {/* Value label above bar */}
+                                {/* Value label - pop in animation */}
                                 <motion.text
                                     x={getX(i)}
                                     y={y - 0}
                                     textAnchor="middle"
                                     fill="white"
-                                    fontSize="11"
+                                    fontSize="12"
                                     fontWeight="bold"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.5 + i * 0.07 }}
+                                    initial={{ opacity: 0, scale: 0.5 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{
+                                        delay: 0.6 + i * 0.1,
+                                        type: "spring",
+                                        stiffness: 200,
+                                        damping: 15
+                                    }}
+                                    style={{ textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}
                                 >
                                     {data.actual.toFixed(2)}
                                 </motion.text>
 
-                                {/* Category label inside bar */}
-                                <text
+                                {/* Category label inside bar - fade in */}
+                                <motion.text
                                     x={getX(i)}
                                     y={baseY - 8}
                                     textAnchor="middle"
                                     fill="#1a1a2e"
                                     fontSize="9"
                                     fontWeight="600"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.3 + i * 0.1 }}
                                 >
                                     {data.category.split(' ')[0]}
-                                </text>
+                                </motion.text>
                                 {data.category.split(' ').length > 1 && (
-                                    <text
+                                    <motion.text
                                         x={getX(i)}
                                         y={baseY + 2}
                                         textAnchor="middle"
                                         fill="#1a1a2e"
                                         fontSize="9"
                                         fontWeight="600"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.35 + i * 0.1 }}
                                     >
                                         {data.category.split(' ').slice(1).join(' ')}
-                                    </text>
+                                    </motion.text>
                                 )}
                             </g>
                         );
                     })}
 
-                    {/* Benchmark line - cyan dashed */}
-                    <path
+                    {/* Benchmark line - fade in animation */}
+                    <motion.path
                         d={benchmarkPath}
                         fill="none"
                         stroke="#ef3d3dff"
-                        strokeWidth="1"
-                        strokeDasharray="8 5"
+                        strokeWidth="1.5"
+                        strokeDasharray="4 4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.8 }}
                     />
 
                     {/* Glow effect */}
-                    <path
+                    <motion.path
                         d={benchmarkPath}
                         fill="none"
                         stroke="#ed3c3cff"
                         strokeWidth="5"
-                        strokeDasharray="8 5"
-                        opacity={0.25}
+                        strokeDasharray="4 4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.2 }}
+                        transition={{ duration: 0.5, delay: 0.8 }}
                     />
                 </svg>
             </div>
