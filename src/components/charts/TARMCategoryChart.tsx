@@ -1,213 +1,150 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useState } from 'react';
+import { TrendingUp, TrendingDown, Target } from 'lucide-react';
 
-// TMS and ATMS are RED (special categories), others are GREEN
+// Category data with real benchmarks (Average Rating Division) - in specified order
 const chartData = [
-    { category: 'TMS', actual: 9.61, benchmark: 7.6, isRed: true },
-    { category: 'Structures', actual: 9.31, benchmark: 6.0, isRed: false },
-    { category: 'Roadway', actual: 9.36, benchmark: 5.5, isRed: false },
-    { category: 'Road Signage and Furniture', actual: 9.39, benchmark: 5.30, isRed: false },
-    { category: 'Facilities', actual: 8.99, benchmark: 4.7, isRed: false },
-    { category: 'Landscaping', actual: 7.22, benchmark: 1.7, isRed: false },
-    { category: 'ATMS', actual: 9.50, benchmark: 7.2, isRed: true }
+    { category: 'Roadways', actual: 9.36, benchmark: 9.13, icon: '🛣️' },
+    { category: 'Road Signage', actual: 9.39, benchmark: 9.31, icon: '🪧' },
+    { category: 'Structures', actual: 9.31, benchmark: 9.12, icon: '🌉' },
+    { category: 'Landscaping', actual: 7.22, benchmark: 6.56, icon: '🌳' },
+    { category: 'ATMS', actual: 9.50, benchmark: 9.65, icon: '🖥️' },
+    { category: 'Project Facilities', actual: 8.99, benchmark: 8.78, icon: '🏢' },
+    { category: 'TMS', actual: 9.61, benchmark: 9.71, icon: '💰' }
 ];
 
+const getBarColor = (actual: number, benchmark: number) => {
+    const delta = actual - benchmark;
+    if (delta >= 0.2) return { bar: 'from-emerald-500 to-green-500', text: 'text-emerald-400' };
+    if (delta >= 0) return { bar: 'from-green-400 to-lime-400', text: 'text-green-400' };
+    return { bar: 'from-red-400 to-red-500', text: 'text-red-400' };
+};
+
 export function TARMCategoryChart() {
-    const chartHeight = 230;
-    const chartWidth = 520;
-    const paddingLeft = 5;
-    const paddingRight = 5;
-    const paddingTop = 35;
-    const paddingBottom = 45; // More space for labels below
-    const barWidth = 60;
-    const barGap = 8;
-    const minY = 0;
-    const maxY = 10;
-
-    const getY = (value: number) => {
-        return paddingTop + ((maxY - value) / (maxY - minY)) * (chartHeight - paddingTop - paddingBottom);
-    };
-
-    const getX = (index: number) => {
-        const totalBarsWidth = chartData.length * barWidth + (chartData.length - 1) * barGap;
-        const startX = (chartWidth - totalBarsWidth) / 2;
-        return startX + index * (barWidth + barGap) + barWidth / 2;
-    };
-
-    const baseY = chartHeight - paddingBottom;
-
-    // Generate benchmark line
-    const benchmarkPath = useMemo(() => {
-        let path = '';
-        chartData.forEach((d, i) => {
-            const x = getX(i);
-            const y = getY(d.benchmark);
-            const halfBar = barWidth / 2 + 2;
-
-            if (i === 0) {
-                path = `M ${x - halfBar},${y}`;
-            }
-            path += ` L ${x + halfBar},${y}`;
-
-            if (i < chartData.length - 1) {
-                const nextY = getY(chartData[i + 1].benchmark);
-                path += ` L ${x + halfBar},${nextY}`;
-                const nextX = getX(i + 1);
-                path += ` L ${nextX - halfBar},${nextY}`;
-            }
-        });
-        return path;
-    }, []);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const maxRating = 10;
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="glass-card p-3 h-full"
+            className="glass-card p-4 h-full flex flex-col"
         >
-            {/* Header with Legend */}
-            <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-semibold text-white/90">TARM Rating by Category</h3>
-                <div className="flex items-center gap-4 text-xs">
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded" style={{ background: 'linear-gradient(180deg, #a3c93a 0%, #7cb342 100%)' }} />
-                        <span className="text-white/60">Above Benchmark</span>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                    <Target className="w-4 h-4 text-cyan-400" />
+                    <h3 className="text-sm font-semibold text-white/90">TARM Rating by Category</h3>
+                </div>
+                <div className="flex items-center gap-3 text-[9px]">
+                    <div className="flex items-center gap-1">
+                        <div className="w-6 h-1.5 rounded bg-gradient-to-r from-emerald-500 to-lime-400" />
+                        <span className="text-white/50">Above Avg</span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-3 h-3 rounded" style={{ background: 'linear-gradient(180deg, #ef5350 0%, #c62828 100%)' }} />
-                        <span className="text-white/60">Below Benchmark</span>
+                    <div className="flex items-center gap-1">
+                        <div className="w-6 h-1.5 rounded bg-gradient-to-r from-red-400 to-red-500" />
+                        <span className="text-white/50">Below Avg</span>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-5 h-0 border-t-2 border-dashed border-blue-400" />
-                        <span className="text-white/60">Benchmark</span>
+                    <div className="flex items-center gap-1">
+                        <div className="w-0.5 h-3 bg-cyan-400" />
+                        <span className="text-white/50">Div Avg</span>
                     </div>
                 </div>
             </div>
 
-            <div className="h-[230px]">
-                <svg
-                    viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-                    className="w-full h-full"
-                    preserveAspectRatio="xMidYMid meet"
-                >
-                    <defs>
-                        {/* Green gradient - for standard categories */}
-                        <linearGradient id="greenBarGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#a3c93a" />
-                            <stop offset="100%" stopColor="#7cb342" />
-                        </linearGradient>
-                        {/* Red gradient - for TMS/ATMS */}
-                        <linearGradient id="redBarGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#ef5350" />
-                            <stop offset="100%" stopColor="#c62828" />
-                        </linearGradient>
-                    </defs>
+            {/* Bars */}
+            <div className="flex-1 flex flex-col justify-between gap-2">
+                {chartData.map((data, index) => {
+                    const progressWidth = (data.actual / maxRating) * 100;
+                    const benchmarkPos = (data.benchmark / maxRating) * 100;
+                    const delta = data.actual - data.benchmark;
+                    const colors = getBarColor(data.actual, data.benchmark);
+                    const isHovered = hoveredIndex === index;
 
-                    {/* Bars */}
-                    {chartData.map((data, i) => {
-                        const x = getX(i) - barWidth / 2;
-                        const barHeight = ((data.actual - minY) / (maxY - minY)) * (chartHeight - paddingTop - paddingBottom);
-                        const y = getY(data.actual);
+                    return (
+                        <motion.div
+                            key={data.category}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.1 + index * 0.08 }}
+                            onMouseEnter={() => setHoveredIndex(index)}
+                            onMouseLeave={() => setHoveredIndex(null)}
+                            className={`
+                                relative flex items-center gap-2 p-2 rounded-lg transition-all cursor-pointer
+                                ${isHovered ? 'bg-white/10 scale-[1.02]' : 'bg-white/5'}
+                            `}
+                        >
+                            {/* Category Name */}
+                            <div className="w-28 flex items-center gap-1.5 shrink-0">
+                                <span className="text-sm">{data.icon}</span>
+                                <span className="text-[10px] text-white/70 font-medium truncate">
+                                    {data.category}
+                                </span>
+                            </div>
 
-                        return (
-                            <g key={data.category}>
-                                {/* Bar */}
-                                <motion.rect
-                                    x={x}
-                                    y={y}
-                                    width={barWidth}
-                                    height={barHeight}
-                                    rx={4}
-                                    ry={4}
-                                    fill={data.isRed ? 'url(#redBarGrad)' : 'url(#greenBarGrad)'}
-                                    initial={{ height: 0, y: baseY }}
-                                    animate={{ height: barHeight, y: y }}
-                                    transition={{ duration: 0.8, delay: i * 0.07, ease: 'easeOut' }}
-                                />
+                            {/* Progress Bar Container */}
+                            <div className="flex-1 relative h-5">
+                                {/* Background track */}
+                                <div className="absolute inset-0 bg-white/10 rounded-full overflow-hidden">
+                                    {/* Progress Bar */}
+                                    <motion.div
+                                        className={`h-full rounded-full bg-gradient-to-r ${colors.bar}`}
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${progressWidth}%` }}
+                                        transition={{ duration: 0.8, delay: 0.2 + index * 0.08, ease: 'easeOut' }}
+                                    />
+                                </div>
 
-                                {/* Value label above bar */}
-                                <motion.text
-                                    x={getX(i)}
-                                    y={y + 25}
-                                    textAnchor="middle"
-                                    fill={data.isRed ? '#ef5350' : '#a3c93a'}
-                                    fontSize="11"
-                                    fontWeight="bold"
+                                {/* Benchmark Marker */}
+                                <motion.div
+                                    className="absolute top-0 bottom-0 w-0.5 bg-cyan-400"
+                                    style={{ left: `${benchmarkPos}%` }}
+                                    initial={{ opacity: 0, scaleY: 0 }}
+                                    animate={{ opacity: 1, scaleY: 1 }}
+                                    transition={{ delay: 0.5 + index * 0.08 }}
+                                >
+                                    <div className="absolute inset-0 w-1 -left-0.5 bg-cyan-400/30 blur-sm" />
+                                </motion.div>
+
+                                {/* Rating Value on bar */}
+                                <motion.span
+                                    className="absolute top-1/2 -translate-y-1/2 text-[10px] font-bold text-white right-2"
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.5 + i * 0.07 }}
+                                    transition={{ delay: 0.6 + index * 0.08 }}
                                 >
                                     {data.actual.toFixed(2)}
-                                </motion.text>
+                                </motion.span>
+                            </div>
 
-                                {/* Category label BELOW the bars */}
-                                {data.category === 'Road Signage and Furniture' ? (
-                                    <>
-                                        <text
-                                            x={getX(i)}
-                                            y={baseY + 10}
-                                            textAnchor="middle"
-                                            fill="rgba(255,255,255,0.75)"
-                                            fontSize="9"
-                                        >
-                                            Road Signage
-                                        </text>
-                                        <text
-                                            x={getX(i)}
-                                            y={baseY + 21}
-                                            textAnchor="middle"
-                                            fill="rgba(255,255,255,0.75)"
-                                            fontSize="9"
-                                        >
-                                            and Furniture
-                                        </text>
-                                    </>
+                            {/* Delta Badge */}
+                            <div className={`
+                                w-14 flex items-center justify-end gap-0.5 shrink-0
+                                ${delta >= 0 ? 'text-emerald-400' : 'text-red-400'}
+                            `}>
+                                {delta >= 0 ? (
+                                    <TrendingUp className="w-3 h-3" />
                                 ) : (
-                                    <text
-                                        x={getX(i)}
-                                        y={baseY + 10}
-                                        textAnchor="middle"
-                                        fill="rgba(255,255,255,0.75)"
-                                        fontSize="10"
-                                    >
-                                        {data.category}
-                                    </text>
+                                    <TrendingDown className="w-3 h-3" />
                                 )}
-                            </g>
-                        );
-                    })}
+                                <span className="text-[10px] font-bold">
+                                    {delta >= 0 ? '+' : ''}{delta.toFixed(2)}
+                                </span>
+                            </div>
+                        </motion.div>
+                    );
+                })}
+            </div>
 
-                    {/* Benchmark line - blue dashed */}
-                    <motion.path
-                        d={benchmarkPath}
-                        fill="none"
-                        stroke="#4a90d9"
-                        strokeWidth="2.5"
-                        strokeDasharray="8 5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{ duration: 1.8, delay: 0.4, ease: 'easeInOut' }}
-                    />
-
-                    {/* Glow effect */}
-                    <motion.path
-                        d={benchmarkPath}
-                        fill="none"
-                        stroke="#4a90d9"
-                        strokeWidth="8"
-                        strokeDasharray="8 5"
-                        opacity={0.2}
-                        filter="blur(2px)"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 1.8, delay: 0.4, ease: 'easeInOut' }}
-                    />
-                </svg>
+            {/* Summary Footer */}
+            <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[9px]">
+                <span className="text-white/40">Division HO Rating vs Avg</span>
+                <span className="text-emerald-400 font-bold">
+                    Avg: {(chartData.reduce((sum, d) => sum + d.actual, 0) / chartData.length).toFixed(2)}
+                </span>
             </div>
         </motion.div>
     );

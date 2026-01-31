@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { projectMarkers } from '@/data/dashboard';
 import { TrendingUp, TrendingDown, Trophy } from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
 
 // Grade based on cumulative rating
 const getGrade = (cumRating: number): 'E' | 'A' | 'B' | 'C' => {
@@ -20,6 +21,46 @@ const gradeStyles = {
 };
 
 export function PyramidRankings() {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [isPaused, setIsPaused] = useState(false);
+
+    // Auto-scroll effect using setInterval
+    useEffect(() => {
+        // Only run on client side
+        if (typeof window === 'undefined') return;
+
+        let intervalId: NodeJS.Timeout | null = null;
+        let isWaitingAtTop = false;
+
+        const startScrolling = () => {
+            intervalId = setInterval(() => {
+                const container = scrollRef.current;
+                if (!container || isPaused || isWaitingAtTop) return;
+
+                container.scrollTop += 1;
+
+                // Reset to top when reaching bottom
+                if (container.scrollTop >= container.scrollHeight - container.clientHeight) {
+                    container.scrollTop = 0;
+                    isWaitingAtTop = true;
+
+                    // Pause at top for 5 seconds
+                    setTimeout(() => {
+                        isWaitingAtTop = false;
+                    }, 5000);
+                }
+            }, 40); // scroll every 50ms
+        };
+
+        // Start after 10 second delay
+        const timeout = setTimeout(startScrolling, 7000);
+
+        return () => {
+            clearTimeout(timeout);
+            if (intervalId) clearInterval(intervalId);
+        };
+    }, [isPaused]);
+
     // Sort projects by cumulative rating (prevRating) descending
     const sortedProjects = [...projectMarkers]
         .map(p => ({
@@ -72,8 +113,12 @@ export function PyramidRankings() {
                 </div>
             </div>
 
-            {/* Scrollable Rankings List - Fixed height for exactly 9 projects */}
-            <div className="max-h-[350px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+            {/* Scrollable Rankings List - Auto-scrolling */}
+            <div
+                ref={scrollRef}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+                className="max-h-[350px] overflow-y-scroll space-y-2 pr-1 custom-scrollbar">
                 {sortedProjects.map((project, index) => {
                     const isRise = project.rating > project.prevRating;
                     const grade = project.grade;

@@ -91,7 +91,7 @@ export function ConditionChart() {
                     <div className="w-px h-3 bg-white/20 mx-1" />
                     <div className={`flex items-center gap-0.5 ${avgChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                         {avgChange >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                        <span className="font-medium text-xs">{avgChange >= 0 ? '+' : ''}{avgChange.toFixed(2)}%</span>
+                        <span className="font-medium     text-xs">{avgChange >= 0 ? '+' : ''}{avgChange.toFixed(2)}%</span>
                     </div>
                 </div>
             </div>
