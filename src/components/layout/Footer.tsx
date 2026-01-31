@@ -4,52 +4,75 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 export function Footer() {
+    const currentDate = new Date().toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
     return (
         <motion.footer
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-auto py-4 px-6 bg-black/40 backdrop-blur-xl border-t border-white/5"
+            transition={{ duration: 0.5, delay: 0.8 }}
+            className="glass-card px-6 py-4 mt-6"
         >
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                {/* Left - Branding */}
                 <div className="flex items-center gap-3">
-                    <div className="bg-white rounded-lg p-1">
-                        <Image
-                            src="/logo-star.png"
-                            alt="HiRATE"
-                            width={28}
-                            height={28}
-                            className="object-contain"
-                        />
-                    </div>
+                    <Image
+                        src="/logo-star.png"
+                        alt="HiRATE"
+                        width={32}
+                        height={32}
+                        className="rounded-lg"
+                    />
                     <div>
-                        <p className="text-sm font-semibold text-white/90">HiRATE Dashboard</p>
-                        <p className="text-xs text-white/50">Powered by Cube Highways</p>
+                        <span className="text-sm font-semibold text-white/90">
+                            HiRATE Dashboard
+                        </span>
+                        <p className="text-[10px] text-white/40">Performance Analytics Platform</p>
                     </div>
                 </div>
 
+                {/* Center - Update info */}
                 <div className="text-center">
                     <p className="text-xs text-white/50">
-                        Data as of December 2025 | FY 2025-26
+                        Last updated: <span className="text-white/70">{currentDate}</span>
+                    </p>
+                    <p className="text-[10px] text-white/30 mt-1">
+                        Data refreshes every month
                     </p>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <div className="bg-white rounded-lg px-2 py-1">
+                {/* Right - Company logos */}
+                <div className="flex items-center gap-2">
+                    <div className="bg-white/90 px-2 py-1 rounded">
                         <Image
                             src="/logo-highways.png"
                             alt="Cube Highways"
-                            width={80}
+                            width={100}
                             height={28}
-                            className="object-contain"
+                            className="opacity-100"
+                        />
+                    </div>
+                    <div className="w-px h-6 bg-white/20" />
+                    <div className="bg-white/90 px-2 py-1 rounded">
+                        <Image
+                            src="/logo-tech.png"
+                            alt="Cube Technologies"
+                            width={60}
+                            height={24}
+                            className="opacity-100"
                         />
                     </div>
                 </div>
             </div>
 
-            <div className="mt-3 pt-3 border-t border-white/10 text-center">
-                <p className="text-xs text-white/40">
-                    © 2025 Cube Highways. All rights reserved. | Highway Rating and Assessment Tool for Excellence
+            {/* Copyright */}
+            <div className="mt-4 pt-3 border-t border-white/5 text-center">
+                <p className="text-[10px] text-white/30">
+                    © 2025 Cube Highways Technologies. All rights reserved. | HiRATE v2.0
                 </p>
             </div>
         </motion.footer>
