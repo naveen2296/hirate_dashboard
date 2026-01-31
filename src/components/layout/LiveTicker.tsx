@@ -5,10 +5,20 @@ import { tickerData } from '@/data/dashboard';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 export function LiveTicker() {
+    // Double data for seamless infinite loop - all 22 projects will scroll through
     const items = [...tickerData, ...tickerData];
 
     return (
-        <div className="relative overflow-hidden py-3 border-y border-white/5 bg-black/30">
+        <div
+            className="relative overflow-hidden py-3"
+            style={{
+                background: 'rgba(15, 20, 25, 0.4)',
+                backdropFilter: 'blur(20px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+            }}
+        >
             <motion.div
                 animate={{ x: ['0%', '-50%'] }}
                 transition={{
@@ -41,8 +51,14 @@ export function LiveTicker() {
             </motion.div>
 
             {/* Gradient fade edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#0a0a0a] to-transparent pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#0a0a0a] to-transparent pointer-events-none" />
+            <div
+                className="absolute left-0 top-0 bottom-0 w-20 pointer-events-none"
+                style={{ background: 'linear-gradient(to right, rgba(10, 10, 15, 0.9), transparent)' }}
+            />
+            <div
+                className="absolute right-0 top-0 bottom-0 w-20 pointer-events-none"
+                style={{ background: 'linear-gradient(to left, rgba(10, 10, 15, 0.9), transparent)' }}
+            />
         </div>
     );
 }
