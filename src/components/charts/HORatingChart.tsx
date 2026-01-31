@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 // Data matching reference image
 const chartData = [
@@ -29,6 +30,12 @@ export function HORatingChart() {
     const paddingTop = 25;
     const paddingBottom = 0;
     const baseline = 8.82;
+
+    // Calculate rise/fall percentage (Nov to Dec)
+    // Formula: ((Dec - Nov) / Nov) * 100
+    const novData = chartData[2]; // Nov
+    const decData = chartData[3]; // Dec
+    const ratingChange = ((decData.rating - novData.rating) / novData.rating) * 100;
 
     const getY = (value: number) => {
         return paddingTop + ((maxY - value) / (maxY - minY)) * chartHeight;
@@ -59,8 +66,16 @@ export function HORatingChart() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="glass-card p-3 h-full relative"
         >
-            <div className="mb-2">
+            <div className="flex items-center justify-between mb-2">
                 <h3 className="text-sm font-semibold text-white/90">Project HO Rating by Month</h3>
+                <div className="flex items-center gap-2 text-xs">
+                    {/* Rating Change Indicator - Icon with label */}
+                    <div className="w-px h-3 bg-white/20" />
+                    <div className={`flex items-center gap-0.5 ${ratingChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {ratingChange >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                        <span className="font-semibold text-xs">{ratingChange >= 0 ? '+' : ''}{ratingChange.toFixed(2)}%</span>
+                    </div>
+                </div>
             </div>
 
             <div className="h-[200px] relative">
@@ -108,6 +123,7 @@ export function HORatingChart() {
                         const y = getY(data.rating);
                         const prevRating = i > 0 ? chartData[i - 1].rating : data.rating;
                         const change = data.rating - prevRating;
+                        const isLast = i === chartData.length - 1;
 
                         return (
                             <g key={data.month}>
@@ -137,6 +153,24 @@ export function HORatingChart() {
                                 >
                                     {data.rating.toFixed(2)}
                                 </motion.text>
+
+                                {/* Rise/Fall % at the end */}
+                                {isLast && (
+                                    <motion.text
+                                        x={x + 18}
+                                        y={y}
+                                        textAnchor="start"
+                                        fill={ratingChange >= 0 ? "#22c55e" : "#ef4444"}
+                                        fontSize="11"
+                                        fontWeight="bold"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 1.3 }}
+                                    >
+                                        {ratingChange >= 0 ? '↑' : '↓'}
+                                    </motion.text>
+                                )}
+
                                 {/* X-axis */}
                                 <text x={x} y={paddingTop + chartHeight + 2} textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="12">
                                     {data.month}

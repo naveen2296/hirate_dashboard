@@ -2,13 +2,14 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
-// TAR Count data - waterfall style
+// TAR Count data - waterfall style with rise/fall percentages
 const chartData = [
-    { rating: '10', count: 117525, label: 'Rating 10' },
-    { rating: '5', count: 7289, label: 'Rating 5' },
-    { rating: '1', count: 5389, label: 'Rating 1' },
-    { rating: 'Total', count: 130203, isTotal: true, label: 'Total Issues' }
+    { rating: '10', count: 117525, label: 'Rating 10', change: null },
+    { rating: '5', count: 7289, label: 'Rating 5', change: 4.2 },
+    { rating: '1', count: 5389, label: 'Rating 1', change: -5.1 },
+    { rating: 'Total', count: 130203, isTotal: true, label: 'Total Issues', change: null }
 ];
 
 interface TooltipData {
@@ -21,25 +22,25 @@ interface TooltipData {
 export function IssuesChart() {
     const [tooltip, setTooltip] = useState<TooltipData | null>(null);
 
-    const chartHeight = 180;
+    const chartHeight = 200;
     const chartWidth = 340;
-    const paddingTop = 35;
+    const paddingTop = 40;
     const paddingBottom = 25;
-    const barWidth = 60;
+    const barWidth = 55;
 
     const maxCount = chartData[3].count; // Total is max
     const maxBarHeight = chartHeight - paddingTop - paddingBottom;
     const baseY = chartHeight - paddingBottom;
 
     // Calculate cumulative positions for waterfall
-    const getBarHeight = (count: number) => {
-        return (count / maxCount) * maxBarHeight;
+    const getBarHeight = (count: number, multiplier: number = 1) => {
+        return (count / maxCount) * maxBarHeight * multiplier;
     };
 
     const formatNumber = (num: number) => num.toLocaleString();
 
-    // Calculate waterfall positions
-    const bars: { rating: string; count: number; label: string; height: number; y: number; x: number; isTotal?: boolean }[] = [];
+    // Calculate waterfall positions with increased heights for Rating 5 and Rating 1
+    const bars: { rating: string; count: number; label: string; height: number; y: number; x: number; isTotal?: boolean; change: number | null }[] = [];
 
     // Rating 10 - starts from bottom
     const bar10Height = getBarHeight(chartData[0].count);
@@ -47,25 +48,25 @@ export function IssuesChart() {
         ...chartData[0],
         height: bar10Height,
         y: baseY - bar10Height,
-        x: 30
+        x: 25
     });
 
-    // Rating 5 - stacks on top (floating)
-    const bar5Height = getBarHeight(chartData[1].count);
+    // Rating 5 - stacks on top (floating) - increased height multiplier
+    const bar5Height = getBarHeight(chartData[1].count, 2.5);
     bars.push({
         ...chartData[1],
         height: bar5Height,
         y: bars[0].y - bar5Height - 2,
-        x: 110
+        x: 100
     });
 
-    // Rating 1 - stacks further (floating)
-    const bar1Height = getBarHeight(chartData[2].count);
+    // Rating 1 - stacks further (floating) - increased height multiplier
+    const bar1Height = getBarHeight(chartData[2].count, 2.5);
     bars.push({
         ...chartData[2],
         height: bar1Height,
         y: bars[1].y - bar1Height - 2,
-        x: 190
+        x: 175
     });
 
     // Total - full height from bottom
@@ -74,7 +75,7 @@ export function IssuesChart() {
         ...chartData[3],
         height: totalHeight,
         y: baseY - totalHeight,
-        x: 275
+        x: 265
     });
 
     return (
@@ -84,9 +85,26 @@ export function IssuesChart() {
             transition={{ duration: 0.5, delay: 0.35 }}
             className="glass-card p-4 h-full relative"
         >
-            <h3 className="text-sm font-semibold text-white/90 mb-2">Issues Distribution</h3>
+            {/* Header with legend */}
+            <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-white/90">Rating Observations</h3>
+                <div className="flex items-center gap-3 text-xs">
+                    {/* Rating 5 rise */}
+                    <div className="flex items-center gap-1">
+                        <span className="text-white/60">5:</span>
+                        <TrendingUp className="w-3 h-3 text-green-400" />
+                        <span className="font-semibold text-green-400">+4.2%</span>
+                    </div>
+                    {/* Rating 1 fall */}
+                    <div className="flex items-center gap-1">
+                        <span className="text-white/60">1:</span>
+                        <TrendingDown className="w-3 h-3 text-red-400" />
+                        <span className="font-semibold text-red-400">-5.1%</span>
+                    </div>
+                </div>
+            </div>
 
-            <div className="h-[185px] relative">
+            <div className="h-[190px] relative">
                 <svg
                     viewBox={`0 0 ${chartWidth} ${chartHeight}`}
                     className="w-full h-full"
@@ -113,7 +131,7 @@ export function IssuesChart() {
                         x2={bars[1].x}
                         y2={bars[0].y}
                         stroke="rgba(255,255,255,0.3)"
-                        strokeWidth="1"
+                        strokeWidth="0"
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: 1 }}
                         transition={{ delay: 0.8, duration: 0.3 }}
@@ -124,7 +142,7 @@ export function IssuesChart() {
                         x2={bars[1].x}
                         y2={bars[1].y + bars[1].height}
                         stroke="rgba(255,255,255,0.3)"
-                        strokeWidth="1"
+                        strokeWidth="0"
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: 1 }}
                         transition={{ delay: 0.9, duration: 0.2 }}
@@ -137,7 +155,7 @@ export function IssuesChart() {
                         x2={bars[2].x}
                         y2={bars[1].y}
                         stroke="rgba(255,255,255,0.3)"
-                        strokeWidth="1"
+                        strokeWidth="0"
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: 1 }}
                         transition={{ delay: 1.0, duration: 0.3 }}
@@ -148,7 +166,7 @@ export function IssuesChart() {
                         x2={bars[2].x}
                         y2={bars[2].y + bars[2].height}
                         stroke="rgba(255,255,255,0.3)"
-                        strokeWidth="1"
+                        strokeWidth="0"
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: 1 }}
                         transition={{ delay: 1.1, duration: 0.2 }}
@@ -179,13 +197,13 @@ export function IssuesChart() {
                                 onMouseLeave={() => setTooltip(null)}
                             />
 
-                            {/* Value label above bar - Always visible */}
+                            {/* Value label just above bar - Larger text */}
                             <motion.text
                                 x={bar.x + barWidth / 2}
-                                y={bar.y - 6}
+                                y={bar.y - 0.05}
                                 textAnchor="middle"
                                 fill="white"
-                                fontSize="11"
+                                fontSize="13"
                                 fontWeight="bold"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -195,14 +213,14 @@ export function IssuesChart() {
                                 {formatNumber(bar.count)}
                             </motion.text>
 
-                            {/* Rating label below bar */}
+                            {/* Rating label below bar - Larger text */}
                             <text
                                 x={bar.x + barWidth / 2}
-                                y={baseY + 15}
+                                y={baseY + 10}
                                 textAnchor="middle"
-                                fill="rgba(255,255,255,0.7)"
-                                fontSize="12"
-                                fontWeight="500"
+                                fill="rgba(255,255,255,0.8)"
+                                fontSize="13"
+                                fontWeight="600"
                                 className="pointer-events-none"
                             >
                                 {bar.rating}

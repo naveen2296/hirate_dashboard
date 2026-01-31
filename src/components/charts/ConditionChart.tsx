@@ -2,13 +2,14 @@
 
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 // Data matching reference image
 const chartData = [
-    { month: 'Sep 2025', CC: 9.43, FC: 9.08, PC: 9.06 },
-    { month: 'Oct 2025', CC: 9.48, FC: 9.04, PC: 9.13 },
-    { month: 'Nov 2025', CC: 9.58, FC: 9.23, PC: 9.22 },
-    { month: 'Dec 2025', CC: 9.66, FC: 9.21, PC: 9.43 }
+    { month: 'Sep', CC: 9.43, FC: 9.08, PC: 9.06 },
+    { month: 'Oct', CC: 9.48, FC: 9.04, PC: 9.13 },
+    { month: 'Nov', CC: 9.58, FC: 9.23, PC: 9.22 },
+    { month: 'Dec', CC: 9.66, FC: 9.21, PC: 9.43 }
 ];
 
 interface TooltipData {
@@ -29,6 +30,16 @@ export function ConditionChart() {
     const paddingX = 35;
     const paddingTop = 25;
     const paddingBottom = 30;
+
+    // Calculate rise/fall percentages (Nov to Dec)
+    // Formula: ((Dec - Nov) / Dec) * 100
+    const novData = chartData[2]; // Nov 2025
+    const decData = chartData[3]; // Dec 2025
+
+    const ccChange = ((decData.CC - novData.CC) / decData.CC) * 100;
+    const fcChange = ((decData.FC - novData.FC) / decData.FC) * 100;
+    const pcChange = ((decData.PC - novData.PC) / decData.PC) * 100;
+    const avgChange = (ccChange + fcChange + pcChange) / 3;
 
     const getY = (value: number) => {
         return paddingTop + ((maxY - value) / (maxY - minY)) * chartHeight;
@@ -76,6 +87,12 @@ export function ConditionChart() {
                         <div className="w-2 h-2 rounded-full bg-purple-500" />
                         <span className="text-white/60">PC</span>
                     </div>
+                    {/* Average Change - Icon only */}
+                    <div className="w-px h-3 bg-white/20 mx-1" />
+                    <div className={`flex items-center gap-0.5 ${avgChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {avgChange >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                        <span className="font-medium text-xs">{avgChange >= 0 ? '+' : ''}{avgChange.toFixed(2)}%</span>
+                    </div>
                 </div>
             </div>
 
@@ -113,6 +130,7 @@ export function ConditionChart() {
                     {/* Labels - Always visible + Invisible hover areas */}
                     {chartData.map((data, i) => {
                         const x = getX(i);
+                        const isLast = i === chartData.length - 1;
                         return (
                             <g key={data.month}>
                                 {/* Invisible hover area */}
@@ -127,18 +145,72 @@ export function ConditionChart() {
                                     onMouseLeave={() => setTooltip(null)}
                                 />
 
-                                {/* CC Label - ABOVE */}
+                                {/* CC Label */}
                                 <motion.text x={x} y={getY(data.CC) - 8} textAnchor="middle" fill="#22c55e" fontSize="12" fontWeight="bold" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 + i * 0.1 }}>
                                     {data.CC}
                                 </motion.text>
-                                {/* FC Label - BELOW */}
+
+                                {/* CC Rise/Fall % at the end */}
+                                {isLast && (
+                                    <motion.text
+                                        x={x + 22}
+                                        y={getY(data.CC)}
+                                        textAnchor="start"
+                                        fill={ccChange >= 0 ? "#22c55e" : "#ef4444"}
+                                        fontSize="11"
+                                        fontWeight="bold"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 1.3 }}
+                                    >
+                                        {ccChange >= 0 ? '↑' : '↓'}
+                                    </motion.text>
+                                )}
+
+                                {/* FC Label */}
                                 <motion.text x={x} y={getY(data.FC) + 16} textAnchor="middle" fill="#f59e0b" fontSize="12" fontWeight="bold" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 + i * 0.1 }}>
                                     {data.FC}
                                 </motion.text>
-                                {/* PC Label - ABOVE */}
+
+                                {/* FC Rise/Fall % at the end */}
+                                {isLast && (
+                                    <motion.text
+                                        x={x + 22}
+                                        y={getY(data.FC) + 4}
+                                        textAnchor="start"
+                                        fill={fcChange >= 0 ? "#22c55e" : "#ef4444"}
+                                        fontSize="11"
+                                        fontWeight="bold"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 1.4 }}
+                                    >
+                                        {fcChange >= 0 ? '↑' : '↓'}
+                                    </motion.text>
+                                )}
+
+                                {/* PC Label */}
                                 <motion.text x={x} y={getY(data.PC) - 8} textAnchor="middle" fill="#a855f7" fontSize="12" fontWeight="bold" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 + i * 0.1 }}>
                                     {data.PC}
                                 </motion.text>
+
+                                {/* PC Rise/Fall % at the end */}
+                                {isLast && (
+                                    <motion.text
+                                        x={x + 22}
+                                        y={getY(data.PC)}
+                                        textAnchor="start"
+                                        fill={pcChange >= 0 ? "#22c55e" : "#ef4444"}
+                                        fontSize="11"
+                                        fontWeight="bold"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 1.5 }}
+                                    >
+                                        {pcChange >= 0 ? '↑' : '↓'}
+                                    </motion.text>
+                                )}
+
                                 {/* X-axis */}
                                 <text x={x} y={paddingTop + chartHeight + 18} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="10">
                                     {data.month}

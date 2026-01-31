@@ -51,8 +51,8 @@ export function Footer() {
                         <Image
                             src="/logo-highways.png"
                             alt="Cube Highways"
-                            width={100}
-                            height={28}
+                            width={130}
+                            height={36}
                             className="opacity-100"
                         />
                     </div>

@@ -11,6 +11,8 @@ interface TooltipData {
     rating: number;
     prevRating: number;
     status: 'rise' | 'fall';
+    posX: number;
+    posY: number;
 }
 
 // Project positions matched exactly to reference map (percentage-based)
@@ -22,7 +24,7 @@ const projectPositions: Record<string, { x: number; y: number; labelX: number; l
 
     // West India  
     'MBEL': { x: 38, y: 38, labelX: 10, labelY: 40, labelSide: 'left' },     // Gujarat - left side
-    'JMTL': { x: 35, y: 35, labelX: 10, labelY: 32, labelSide: 'left' },     // Gujarat West - far left
+    'JMTPL': { x: 35, y: 35, labelX: 10, labelY: 32, labelSide: 'left' },     // Gujarat West - far left
 
     // Central-North - UP/Bihar area
     'GAEPL': { x: 40, y: 32, labelX: 50, labelY: 30, labelSide: 'right' },  // UP area - center
@@ -31,7 +33,7 @@ const projectPositions: Record<string, { x: number; y: number; labelX: number; l
 
     // West Central - Maharashtra
     'BWHPL': { x: 33, y: 64, labelX: 20, labelY: 60, labelSide: 'left' },    // Maharashtra West
-    'MSHPL': { x: 30, y: 66, labelX: 20, labelY: 66, labelSide: 'left' },    // Maharashtra
+    'MSHP': { x: 30, y: 66, labelX: 20, labelY: 66, labelSide: 'left' },    // Maharashtra
 
     // Central-East - Chhattisgarh/Odisha
     'MHPL': { x: 42, y: 64, labelX: 63, labelY: 58, labelSide: 'right' },   // Chhattisgarh
@@ -39,12 +41,12 @@ const projectPositions: Record<string, { x: number; y: number; labelX: number; l
 
     // South Central - Telangana/AP
     'NDEPL': { x: 34, y: 75, labelX: 20, labelY: 73, labelSide: 'left' },    // Karnataka North
-    'NAMEL': { x: 45, y: 70, labelX: 60, labelY: 66, labelSide: 'right' },  // Telangana
+    'NAM': { x: 45, y: 70, labelX: 60, labelY: 66, labelSide: 'right' },  // Telangana
     'APEL': { x: 44, y: 74, labelX: 20, labelY: 80, labelSide: 'left' },     // AP West
-    'KTIPL': { x: 43, y: 79, labelX: 54, labelY: 72, labelSide: 'right' },  // AP Center
+    'THPL': { x: 43, y: 79, labelX: 54, labelY: 72, labelSide: 'right' },  // AP Center
 
     // South - Kerala/Tamil Nadu
-    'WVEPL': { x: 34, y: 85, labelX: 20, labelY: 86, labelSide: 'left' },    // Kerala
+    'WVEL': { x: 34, y: 85, labelX: 20, labelY: 86, labelSide: 'left' },    // Kerala
     'KETPL': { x: 40, y: 87, labelX: 20, labelY: 92, labelSide: 'left' },    // Kerala South
     'SIPL': { x: 42, y: 84, labelX: 56, labelY: 78, labelSide: 'right' },   // Tamil Nadu North
     'MKTPL': { x: 41, y: 86, labelX: 52, labelY: 84, labelSide: 'right' },  // Tamil Nadu
@@ -104,16 +106,18 @@ export function IndiaMap() {
         >
             <div className="flex items-center justify-between mb-1">
                 <div>
-                    <h3 className="text-xs font-semibold text-white/90">Rise & Fall Map</h3>
-                    <p className="text-[8px] text-white/50">vs previous month</p>
+                    <h3 className="text-sm font-semibold text-white/90">Rise & Fall Map</h3>
+                    <p className="text-xs text-white/50">This Month Rating vs Cumulative Rating</p>
                 </div>
-                <div className="flex gap-2 text-[8px]">
-                    <div className="flex items-center gap-0.5">
-                        <TrendingUp className="w-2.5 h-2.5 text-green-400" />
+                <div className="flex gap-4 text-xs">
+                    <div className="flex items-center gap-1">
+                        <div className="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[8px] border-b-green-500" />
+                        <span className="text-white/70">Rise</span>
                         <span className="font-bold text-green-400">{riseCount}</span>
                     </div>
-                    <div className="flex items-center gap-0.5">
-                        <TrendingDown className="w-2.5 h-2.5 text-red-400" />
+                    <div className="flex items-center gap-1">
+                        <div className="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[8px] border-t-red-500" />
+                        <span className="text-white/70">Fall</span>
                         <span className="font-bold text-red-400">{fallCount}</span>
                     </div>
                 </div>
@@ -175,7 +179,7 @@ export function IndiaMap() {
                                         transform: 'translate(-50%, -50%)',
                                         pointerEvents: 'auto'
                                     }}
-                                    onMouseEnter={() => setTooltip(project)}
+                                    onMouseEnter={() => setTooltip({ ...project, posX: pos.x, posY: pos.y })}
                                     onMouseLeave={() => setTooltip(null)}
                                 >
                                     <div
@@ -202,7 +206,7 @@ export function IndiaMap() {
                                         transform: pos.labelSide === 'left' ? 'translate(-100%, -50%)' : 'translate(0%, -50%)',
                                         pointerEvents: 'auto'
                                     }}
-                                    onMouseEnter={() => setTooltip(project)}
+                                    onMouseEnter={() => setTooltip({ ...project, posX: pos.labelX, posY: pos.labelY })}
                                     onMouseLeave={() => setTooltip(null)}
                                 >
                                     <div className={`
@@ -220,45 +224,47 @@ export function IndiaMap() {
                     })}
                 </div>
 
-                {/* Tooltip */}
+                {/* Tooltip - positioned near marker */}
                 {tooltip && (
                     <motion.div
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="absolute left-1/2 bottom-1 -translate-x-1/2 glass-card p-1.5 z-30 min-w-[100px]"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="absolute z-30 pointer-events-none"
+                        style={{
+                            left: `${tooltip.posX}%`,
+                            top: `${Math.max(tooltip.posY - 12, 5)}%`,
+                            transform: 'translate(-50%, -100%)'
+                        }}
                     >
-                        <div className="flex items-center gap-1 mb-0.5">
-                            <span className={`text-[9px] font-bold ${tooltip.status === 'rise' ? 'text-green-400' : 'text-red-400'}`}>
-                                {tooltip.code}
-                            </span>
-                            {tooltip.status === 'rise' ? (
-                                <TrendingUp className="w-2 h-2 text-green-400" />
-                            ) : (
-                                <TrendingDown className="w-2 h-2 text-red-400" />
-                            )}
-                        </div>
-                        <p className="text-[6px] text-white/60 truncate">{tooltip.name}</p>
-                        <div className="flex items-center justify-between text-[7px]">
-                            <span className="text-white/50">Rating:</span>
-                            <span className={tooltip.status === 'rise' ? 'text-green-400 font-bold' : 'text-red-400 font-bold'}>
-                                {tooltip.prevRating} → {tooltip.rating}
-                            </span>
+                        <div className="bg-gray-900/95 backdrop-blur-sm border border-white/20 rounded px-2 py-1.5 shadow-xl">
+                            <div className="flex items-center gap-1 mb-1">
+                                <span className={`text-[10px] font-bold ${tooltip.status === 'rise' ? 'text-green-400' : 'text-red-400'}`}>
+                                    {tooltip.code}
+                                </span>
+                                {tooltip.status === 'rise' ? (
+                                    <TrendingUp className="w-2.5 h-2.5 text-green-400" />
+                                ) : (
+                                    <TrendingDown className="w-2.5 h-2.5 text-red-400" />
+                                )}
+                            </div>
+                            <div className="flex justify-between gap-3 text-[9px]">
+                                <span className="text-white/60">This Month</span>
+                                <span className={`font-semibold ${tooltip.status === 'rise' ? 'text-green-400' : 'text-red-400'}`}>
+                                    {tooltip.rating.toFixed(2)}
+                                </span>
+                            </div>
+                            <div className="flex justify-between gap-3 text-[9px]">
+                                <span className="text-white/60">Cum Month</span>
+                                <span className="text-white/80 font-semibold">
+                                    {tooltip.prevRating.toFixed(2)}
+                                </span>
+                            </div>
                         </div>
                     </motion.div>
                 )}
             </div>
 
-            {/* Legend */}
-            <div className="absolute bottom-2 right-2 flex gap-3 text-[6px]">
-                <div className="flex items-center gap-1">
-                    <div className="w-0 h-0 border-l-[3px] border-l-transparent border-r-[3px] border-r-transparent border-b-[5px] border-b-green-500" />
-                    <span className="text-white/70">Rise</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <div className="w-0 h-0 border-l-[3px] border-l-transparent border-r-[3px] border-r-transparent border-t-[5px] border-t-red-500" />
-                    <span className="text-white/70">Fall</span>
-                </div>
-            </div>
+
         </motion.div>
     );
 }

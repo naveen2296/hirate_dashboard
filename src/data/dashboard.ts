@@ -20,7 +20,6 @@ export const statsData: StatCard[] = [
         title: 'Projects Audited',
         value: 22,
         description: 'A total of 22 projects were audited',
-        trend: { value: 3, isPositive: true },
         color: 'orange',
         icon: 'monitor'
     },
@@ -30,6 +29,7 @@ export const statsData: StatCard[] = [
         value: 9,
         subtitle: 'FY 25-26',
         description: 'So far 9 months audited and continuing',
+        trend: { value: 77, isPositive: true },
         color: 'blue',
         icon: 'calendar'
     },
@@ -38,16 +38,16 @@ export const statsData: StatCard[] = [
         title: 'Audit Percentage',
         value: '10%',
         description: 'Initiated 10% auditing for all divisions since September 2025',
-        trend: { value: 1.5, isPositive: true },
         color: 'purple',
         icon: 'percent'
     },
     {
-        id: 'issues-found',
-        title: 'HiRATE 2.0',
+        id: 'observations',
+        title: 'Observations',
         value: '12K+',
         subtitle: '130K+ parameters',
         description: '12k+ issues were found upon 130k+ parameters in month of December 2025',
+        trend: { value: 0.27, isPositive: true },
         color: 'cyan',
         icon: 'alert-triangle'
     },
@@ -56,7 +56,7 @@ export const statsData: StatCard[] = [
         title: 'Average Rating',
         value: 9.28,
         description: 'Overall project average rating is 9.28 for FY 25-26',
-        trend: { value: 0.15, isPositive: true },
+        trend: { value: 0.54, isPositive: false },
         color: 'pink',
         icon: 'star'
     }
@@ -113,29 +113,30 @@ export interface ProjectMarker {
 }
 
 export const projectMarkers: ProjectMarker[] = [
-    { code: 'WUPTL', name: 'Western UP Tollway Private Limited', status: 'rise', rating: 9.4, prevRating: 9.1, x: 280, y: 85 },
-    { code: 'DATRL', name: 'Delhi Agra Toll Road Limited', status: 'rise', rating: 9.3, prevRating: 9.0, x: 260, y: 110 },
-    { code: 'KMTPL', name: 'Kolkata Madhya Tollway Private Limited', status: 'rise', rating: 9.5, prevRating: 9.2, x: 420, y: 95 },
-    { code: 'MBEL', name: 'MB Eastern Limited', status: 'rise', rating: 9.2, prevRating: 8.9, x: 235, y: 125 },
-    { code: 'GAEPL', name: 'Ganga Expressway Private Limited', status: 'rise', rating: 9.6, prevRating: 9.3, x: 360, y: 130 },
-    { code: 'JMTL', name: 'Jaipur Mahua Toll Road Limited', status: 'rise', rating: 9.1, prevRating: 8.8, x: 170, y: 155 },
-    { code: 'FRHL', name: 'Farakka Raiganj Highway Limited', status: 'rise', rating: 9.3, prevRating: 9.0, x: 430, y: 165 },
-    { code: 'BFHL', name: 'Baharampore Farakka Highway Limited', status: 'fall', rating: 8.7, prevRating: 8.9, x: 425, y: 195 },
-    { code: 'BWHPL', name: 'Bharuch Waghodia Highway Private Limited', status: 'rise', rating: 9.4, prevRating: 9.1, x: 145, y: 220 },
-    { code: 'MSHPL', name: 'Mundra SH Highway Private Limited', status: 'fall', rating: 8.5, prevRating: 8.8, x: 130, y: 245 },
-    { code: 'MHPL', name: 'Mumbai Highway Private Limited', status: 'fall', rating: 8.6, prevRating: 8.9, x: 380, y: 255 },
-    { code: 'SPPL', name: 'Surat Pune Private Limited', status: 'fall', rating: 8.4, prevRating: 8.7, x: 350, y: 275 },
-    { code: 'NDEPL', name: 'Nashik Dhule Expressway Private Limited', status: 'fall', rating: 8.3, prevRating: 8.6, x: 160, y: 290 },
-    { code: 'APEL', name: 'Ahmednagar Pune Expressway Limited', status: 'fall', rating: 8.5, prevRating: 8.8, x: 155, y: 320 },
-    { code: 'NAMEL', name: 'Nagpur Amravati Expressway Limited', status: 'fall', rating: 8.4, prevRating: 8.7, x: 395, y: 295 },
-    { code: 'KTIPL', name: 'Kota Toll Infrastructure Private Limited', status: 'fall', rating: 8.6, prevRating: 8.9, x: 360, y: 325 },
-    { code: 'WVEPL', name: 'Wardha Vidarbha Expressway Private Limited', status: 'fall', rating: 8.2, prevRating: 8.5, x: 130, y: 375 },
-    { code: 'KETPL', name: 'Kurnool Expressway Toll Private Limited', status: 'rise', rating: 9.6, prevRating: 9.3, x: 170, y: 405 },
-    { code: 'MKTPL', name: 'Mysore Kochi Toll Private Limited', status: 'fall', rating: 8.5, prevRating: 8.8, x: 275, y: 420 },
-    { code: 'SIPL', name: 'Salem Infrastructure Private Limited', status: 'fall', rating: 8.3, prevRating: 8.6, x: 340, y: 400 },
-    { code: 'SMTPL', name: 'Salem Madurai Toll Private Limited', status: 'rise', rating: 9.6, prevRating: 9.4, x: 255, y: 445 },
-    { code: 'NKTPL', name: 'Nellore Kavali Toll Private Limited', status: 'fall', rating: 8.4, prevRating: 8.7, x: 295, y: 420 }
+    { code: 'APEL', name: 'Andhra Pradesh Expressway Limited', status: 'fall', rating: 8.11, prevRating: 8.83, x: 155, y: 320 },
+    { code: 'BFHL', name: 'Baharampore Farakka Highways Limited', status: 'rise', rating: 9.41, prevRating: 9.06, x: 425, y: 195 },
+    { code: 'BWHPL', name: 'DBL Borgaon Watambare Highways Private Limited', status: 'fall', rating: 8.66, prevRating: 9.02, x: 145, y: 220 },
+    { code: 'DATRL', name: 'Delhi Agra Tollway Limited', status: 'fall', rating: 8.08, prevRating: 8.50, x: 260, y: 110 },
+    { code: 'FRHL', name: 'Farakka-Raiganj Highways Ltd', status: 'fall', rating: 8.69, prevRating: 8.80, x: 430, y: 165 },
+    { code: 'GAEPL', name: 'Ghaziabad Aligarh Expressway Private Limited', status: 'rise', rating: 9.11, prevRating: 8.90, x: 360, y: 130 },
+    { code: 'JMTPL', name: 'Jaipur-Mahua Tollway Private Limited', status: 'fall', rating: 8.61, prevRating: 8.76, x: 170, y: 155 },
+    { code: 'KETPL', name: 'Kanyakumari-Etturavattam Tollway Private Limited', status: 'fall', rating: 8.68, prevRating: 9.27, x: 170, y: 405 },
+    { code: 'KMTPL', name: 'Kotwa-Muzaffarpur Tollway Private Limited', status: 'rise', rating: 8.89, prevRating: 8.87, x: 420, y: 95 },
+    { code: 'THPL', name: 'Tirumala Infra Private Limited', status: 'fall', rating: 8.45, prevRating: 8.76, x: 130, y: 245 },
+    { code: 'MBEL', name: 'Mahua Bharatpur Expressway Limited', status: 'rise', rating: 9.30, prevRating: 9.12, x: 235, y: 125 },
+    { code: 'MHPL', name: 'Mangloor Highways Private Limited', status: 'fall', rating: 8.56, prevRating: 9.08, x: 380, y: 255 },
+    { code: 'MKTPL', name: 'Madurai-Kanyakumari Tollway Private Limited', status: 'rise', rating: 9.36, prevRating: 9.21, x: 275, y: 420 },
+    { code: 'MSHP', name: 'Mangalwedha Solapur Highways Private Limited', status: 'fall', rating: 8.64, prevRating: 9.09, x: 350, y: 275 },
+    { code: 'NAM', name: 'N.A.M. Expressway Limited', status: 'fall', rating: 8.53, prevRating: 8.75, x: 395, y: 295 },
+    { code: 'NDEPL', name: 'Nelamangala Devihalli Expressway Private Limited', status: 'fall', rating: 8.73, prevRating: 8.79, x: 160, y: 290 },
+    { code: 'NKTPL', name: 'Nanguneri-Kanyakumari Tollway Private Limited', status: 'rise', rating: 9.75, prevRating: 9.27, x: 295, y: 420 },
+    { code: 'SIPL', name: 'Srirangam Infra Private Limited', status: 'fall', rating: 8.89, prevRating: 9.27, x: 340, y: 400 },
+    { code: 'SMTPL', name: 'Salaipudhur-Madurai Tollway Private Limited', status: 'rise', rating: 9.57, prevRating: 9.40, x: 255, y: 445 },
+    { code: 'SPPL', name: 'Shankarampet Projects Private Limited', status: 'fall', rating: 9.04, prevRating: 9.16, x: 360, y: 325 },
+    { code: 'WUPTL', name: 'Western UP Tollway Limited', status: 'rise', rating: 8.79, prevRating: 8.62, x: 280, y: 85 },
+    { code: 'WVEL', name: 'Walayar Tollways Pvt Ltd', status: 'fall', rating: 8.93, prevRating: 9.04, x: 130, y: 375 }
 ];
+
 
 export const categories = [
     { id: 1, name: 'Roadways', icon: 'road' },
@@ -263,46 +264,46 @@ export interface RankingProject {
 }
 
 export const pyramidRankings: RankingProject[][] = [
-    // Top row - Excellence
-    [{ code: 'SMTPL', rating: 9.6, prevRating: 9.4, grade: 'E' }],
-    // Second row
+    // Top row - Excellence (Cum >= 9.25)
+    [{ code: 'SMTPL', rating: 9.57, prevRating: 9.40, grade: 'E' }],
+    // Second row - E grade
     [
-        { code: 'KETPL', rating: 9.6, prevRating: 9.3, grade: 'E' },
-        { code: 'GAEPL', rating: 9.6, prevRating: 9.3, grade: 'E' }
+        { code: 'KETPL', rating: 8.68, prevRating: 9.27, grade: 'E' },
+        { code: 'SIPL', rating: 8.89, prevRating: 9.27, grade: 'E' }
     ],
-    // Third row
+    // Third row - E and A grade
     [
-        { code: 'KMTPL', rating: 9.5, prevRating: 9.2, grade: 'E' },
-        { code: 'WUPTL', rating: 9.4, prevRating: 9.1, grade: 'E' },
-        { code: 'BWHPL', rating: 9.4, prevRating: 9.1, grade: 'E' }
+        { code: 'NKTPL', rating: 9.75, prevRating: 9.27, grade: 'E' },
+        { code: 'MKTPL', rating: 9.36, prevRating: 9.21, grade: 'A' },
+        { code: 'SPPL', rating: 9.04, prevRating: 9.16, grade: 'A' }
     ],
-    // Fourth row
+    // Fourth row - A grade (9.0-9.25)
     [
-        { code: 'DATRL', rating: 9.3, prevRating: 9.0, grade: 'A' },
-        { code: 'FRHL', rating: 9.3, prevRating: 9.0, grade: 'A' },
-        { code: 'MBEL', rating: 9.2, prevRating: 8.9, grade: 'A' },
-        { code: 'JMTL', rating: 9.1, prevRating: 8.8, grade: 'A' }
+        { code: 'MBEL', rating: 9.30, prevRating: 9.12, grade: 'A' },
+        { code: 'MSHP', rating: 8.64, prevRating: 9.09, grade: 'A' },
+        { code: 'MHPL', rating: 8.56, prevRating: 9.08, grade: 'A' },
+        { code: 'BFHL', rating: 9.41, prevRating: 9.06, grade: 'A' }
     ],
-    // Fifth row
+    // Fifth row - A grade
     [
-        { code: 'BFHL', rating: 8.7, prevRating: 8.9, grade: 'B' },
-        { code: 'MHPL', rating: 8.6, prevRating: 8.9, grade: 'B' },
-        { code: 'KTIPL', rating: 8.6, prevRating: 8.9, grade: 'B' },
-        { code: 'MSHPL', rating: 8.5, prevRating: 8.8, grade: 'B' },
-        { code: 'APEL', rating: 8.5, prevRating: 8.8, grade: 'B' }
+        { code: 'WVEL', rating: 8.93, prevRating: 9.04, grade: 'A' },
+        { code: 'BWHPL', rating: 8.66, prevRating: 9.02, grade: 'A' },
+        { code: 'GAEPL', rating: 9.11, prevRating: 8.90, grade: 'B' },
+        { code: 'KMTPL', rating: 8.89, prevRating: 8.87, grade: 'B' },
+        { code: 'APEL', rating: 8.11, prevRating: 8.83, grade: 'B' }
     ],
-    // Sixth row
+    // Sixth row - B grade (8.75-9.0)
     [
-        { code: 'MKTPL', rating: 8.5, prevRating: 8.8, grade: 'B' },
-        { code: 'NKTPL', rating: 8.4, prevRating: 8.7, grade: 'B' },
-        { code: 'NAMEL', rating: 8.4, prevRating: 8.7, grade: 'B' },
-        { code: 'SPPL', rating: 8.4, prevRating: 8.7, grade: 'B' },
-        { code: 'SIPL', rating: 8.3, prevRating: 8.6, grade: 'C' },
-        { code: 'NDEPL', rating: 8.3, prevRating: 8.6, grade: 'C' }
+        { code: 'FRHL', rating: 8.69, prevRating: 8.80, grade: 'B' },
+        { code: 'NDEPL', rating: 8.73, prevRating: 8.79, grade: 'B' },
+        { code: 'THPL', rating: 8.45, prevRating: 8.76, grade: 'B' },
+        { code: 'JMTPL', rating: 8.61, prevRating: 8.76, grade: 'B' },
+        { code: 'NAM', rating: 8.53, prevRating: 8.75, grade: 'C' },
+        { code: 'WUPTL', rating: 8.79, prevRating: 8.62, grade: 'C' }
     ],
-    // Bottom row
+    // Bottom row - C grade (<8.75)
     [
-        { code: 'WVEPL', rating: 8.2, prevRating: 8.5, grade: 'C' }
+        { code: 'DATRL', rating: 8.08, prevRating: 8.50, grade: 'C' }
     ]
 ];
 
@@ -322,20 +323,19 @@ export const tickerData = [
     { code: 'MHPL', value: 8.56, change: -0.77, isPositive: false },
     { code: 'MKTPL', value: 9.36, change: -0.22, isPositive: false },
     { code: 'MSHP', value: 8.64, change: -0.73, isPositive: false },
-    { code: 'NAMEL', value: 8.53, change: -0.40, isPositive: false },
+    { code: 'NAM', value: 8.53, change: -0.40, isPositive: false },
     { code: 'NDEPL', value: 8.73, change: -0.48, isPositive: false },
     { code: 'NKTPL', value: 9.75, change: 0.61, isPositive: true },
     { code: 'SIPL', value: 8.89, change: -0.58, isPositive: false },
     { code: 'SMTPL', value: 9.37, change: 0.08, isPositive: true },
     { code: 'SPPL', value: 9.04, change: -0.20, isPositive: false },
     { code: 'WUPTL', value: 8.79, change: -0.25, isPositive: false },
-    { code: 'WVEPL', value: 8.93, change: -0.13, isPositive: false },
+    { code: 'WVEL', value: 8.93, change: -0.13, isPositive: false },
 ];
 
 // Overall rating gauge
 export const overallRating = {
-    current: 9.28,
+    current: 8.88,
     max: 10,
-    target: 9.0,
-    previousMonth: 9.15
+    previousMonth: 9.00
 };

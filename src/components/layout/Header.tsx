@@ -76,12 +76,12 @@ export function Header() {
 
                     {/* Company Logos */}
                     <div className="hidden lg:flex items-center gap-2">
-                        <div className="bg-white/90 px-1.5 py-0.5 rounded">
+                        <div className="bg-white/90 px-2 py-1 rounded">
                             <Image
                                 src="/logo-highways.png"
                                 alt="Cube Highways"
-                                width={100}
-                                height={28}
+                                width={130}
+                                height={36}
                                 className="opacity-100"
                             />
                         </div>

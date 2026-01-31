@@ -2,6 +2,7 @@
 
 import { motion, useSpring, useTransform } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 import { overallRating } from '@/data/dashboard';
 
 export function RatingGauge() {
@@ -19,6 +20,10 @@ export function RatingGauge() {
     const strokeDasharray = 283; // Circumference for r=45
     const strokeDashoffset = strokeDasharray - (strokeDasharray * percentage) / 100;
 
+    // Calculate rise/fall percentage: ((current - prev) / prev) * 100
+    const ratingChange = ((overallRating.current - overallRating.previousMonth) / overallRating.previousMonth) * 100;
+    const isPositive = ratingChange >= 0;
+
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -26,8 +31,9 @@ export function RatingGauge() {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="glass-card p-4 h-full flex flex-col"
         >
+            {/* Header - removed top indicator */}
             <div className="mb-2">
-                <h3 className="text-sm font-semibold text-white/90">Overall Project Rating</h3>
+                <h3 className="text-sm font-semibold text-white/90">Project Rating by Month</h3>
                 <p className="text-xs text-white/50">FY 25-26 Average</p>
             </div>
 
@@ -81,18 +87,15 @@ export function RatingGauge() {
                 </div>
             </div>
 
-            {/* Stats row */}
-            <div className="flex justify-between text-xs mt-2 pt-3 border-t border-white/5">
-                <div>
-                    <span className="text-white/50">Target</span>
-                    <span className="ml-2 text-yellow-400 font-medium">{overallRating.target}</span>
-                </div>
+            {/* Stats row - only Prev Month and Change (bold) */}
+            <div className="flex justify-between items-center text-xs mt-2 pt-3 border-t border-white/5">
                 <div>
                     <span className="text-white/50">Prev Month</span>
-                    <span className="ml-2 text-white/80 font-medium">{overallRating.previousMonth}</span>
+                    <span className="ml-2 text-white/80 font-medium">{overallRating.previousMonth.toFixed(2)}</span>
                 </div>
-                <div className="flex items-center gap-1 text-green-400">
-                    <span>+{(overallRating.current - overallRating.previousMonth).toFixed(2)}</span>
+                <div className={`flex items-center gap-1 font-medium ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+                    {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                    <span className="text-xs">{isPositive ? '+' : ''}{ratingChange.toFixed(2)}%</span>
                 </div>
             </div>
         </motion.div>
