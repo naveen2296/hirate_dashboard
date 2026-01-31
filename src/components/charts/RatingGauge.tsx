@@ -1,83 +1,98 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useSpring, useTransform } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { overallRating } from '@/data/dashboard';
 
 export function RatingGauge() {
+    const [isVisible, setIsVisible] = useState(false);
+
+    const progress = useSpring(0, { duration: 1500, bounce: 0 });
+    const displayValue = useTransform(progress, (v) => v.toFixed(2));
+
+    useEffect(() => {
+        setIsVisible(true);
+        progress.set(overallRating.current);
+    }, [progress]);
+
     const percentage = (overallRating.current / overallRating.max) * 100;
-    const circumference = 2 * Math.PI * 80;
-    const strokeDashoffset = circumference - (percentage / 100) * circumference;
+    const strokeDasharray = 283; // Circumference for r=45
+    const strokeDashoffset = strokeDasharray - (strokeDasharray * percentage) / 100;
 
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="glass-card p-6 flex flex-col items-center justify-center h-full"
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="glass-card p-4 h-full flex flex-col"
         >
-            <h3 className="text-sm font-semibold text-white/70 mb-4">Overall Rating</h3>
+            <div className="mb-2">
+                <h3 className="text-sm font-semibold text-white/90">Overall Project Rating</h3>
+                <p className="text-xs text-white/50">FY 25-26 Average</p>
+            </div>
 
-            <div className="relative">
-                <svg width="180" height="180" viewBox="0 0 180 180">
-                    {/* Background circle */}
-                    <circle
-                        cx="90"
-                        cy="90"
-                        r="80"
-                        fill="none"
-                        stroke="rgba(255,255,255,0.1)"
-                        strokeWidth="12"
-                    />
+            <div className="flex-1 flex items-center justify-center">
+                <div className="relative w-40 h-40">
+                    {/* Background arc */}
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                        <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke="rgba(255,255,255,0.05)"
+                            strokeWidth="8"
+                            strokeLinecap="round"
+                        />
+                        {/* Progress arc */}
+                        <motion.circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke="url(#gaugeGradient)"
+                            strokeWidth="8"
+                            strokeLinecap="round"
+                            initial={{ strokeDasharray: strokeDasharray, strokeDashoffset: strokeDasharray }}
+                            animate={{ strokeDashoffset: isVisible ? strokeDashoffset : strokeDasharray }}
+                            transition={{ duration: 1.5, ease: 'easeOut' }}
+                        />
+                        <defs>
+                            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#22c55e" />
+                                <stop offset="50%" stopColor="#06b6d4" />
+                                <stop offset="100%" stopColor="#3b82f6" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
 
-                    {/* Progress circle */}
-                    <motion.circle
-                        cx="90"
-                        cy="90"
-                        r="80"
-                        fill="none"
-                        stroke="url(#gaugeGradient)"
-                        strokeWidth="12"
-                        strokeLinecap="round"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={strokeDashoffset}
-                        transform="rotate(-90 90 90)"
-                        initial={{ strokeDashoffset: circumference }}
-                        animate={{ strokeDashoffset }}
-                        transition={{ duration: 1.5, ease: 'easeOut' }}
-                    />
-
-                    <defs>
-                        <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#22c55e" />
-                            <stop offset="50%" stopColor="#10b981" />
-                            <stop offset="100%" stopColor="#06b6d4" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-
-                {/* Center content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <motion.span
-                        className="text-4xl font-bold text-white"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.5 }}
-                    >
-                        {overallRating.current.toFixed(2)}
-                    </motion.span>
-                    <span className="text-sm text-white/50">out of {overallRating.max}</span>
+                    {/* Center content */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <motion.span
+                            className="text-3xl font-bold text-white number-animate"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                        >
+                            {displayValue}
+                        </motion.span>
+                        <span className="text-xs text-white/50">out of {overallRating.max}</span>
+                    </div>
                 </div>
             </div>
 
-            <div className="mt-4 flex items-center gap-4 text-sm">
-                <div className="text-center">
-                    <p className="text-white/50">Target</p>
-                    <p className="font-semibold text-blue-400">{overallRating.target}</p>
+            {/* Stats row */}
+            <div className="flex justify-between text-xs mt-2 pt-3 border-t border-white/5">
+                <div>
+                    <span className="text-white/50">Target</span>
+                    <span className="ml-2 text-yellow-400 font-medium">{overallRating.target}</span>
                 </div>
-                <div className="w-px h-8 bg-white/10" />
-                <div className="text-center">
-                    <p className="text-white/50">Previous</p>
-                    <p className="font-semibold text-white/80">{overallRating.previousMonth}</p>
+                <div>
+                    <span className="text-white/50">Prev Month</span>
+                    <span className="ml-2 text-white/80 font-medium">{overallRating.previousMonth}</span>
+                </div>
+                <div className="flex items-center gap-1 text-green-400">
+                    <span>+{(overallRating.current - overallRating.previousMonth).toFixed(2)}</span>
                 </div>
             </div>
         </motion.div>

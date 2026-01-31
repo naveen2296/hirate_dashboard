@@ -23,38 +23,66 @@ export default function Home() {
             <LiveTicker />
 
             <main className="flex-1 px-6 py-4 space-y-4">
-                {/* Stats Grid */}
-                <StatsGrid />
-
-                {/* Main Charts Grid */}
+                {/* Row 1: Stats Grid + India Map + Rating Gauge */}
                 <div className="grid grid-cols-12 gap-4">
-                    {/* Left Column - Map & Gauge */}
-                    <div className="col-span-3 space-y-4">
-                        <RatingGauge />
-                        <div className="glass-card p-4 h-[320px]">
+                    {/* Stats - takes 7 columns */}
+                    <div className="col-span-7">
+                        <StatsGrid />
+                    </div>
+
+                    {/* India Map - takes 3 columns */}
+                    <div className="col-span-3">
+                        <div className="glass-card p-4 h-full">
                             <IndiaMap />
                         </div>
                     </div>
 
-                    {/* Center Column - Main Charts */}
-                    <div className="col-span-6 space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <ConditionChart />
-                            <HORatingChart />
-                        </div>
-                        <TARMCategoryChart />
-                    </div>
-
-                    {/* Right Column - Additional Charts */}
-                    <div className="col-span-3 space-y-4">
-                        <TARCountChart />
-                        <IssuesChart />
-                        <PerformanceHeatmap />
+                    {/* Rating Gauge - takes 2 columns */}
+                    <div className="col-span-2">
+                        <RatingGauge />
                     </div>
                 </div>
 
-                {/* Insights Section */}
-                <InsightsSection />
+                {/* Row 2: Main Charts */}
+                <div className="grid grid-cols-12 gap-4">
+                    {/* Condition Chart */}
+                    <div className="col-span-3">
+                        <ConditionChart />
+                    </div>
+
+                    {/* HO Rating Chart */}
+                    <div className="col-span-3">
+                        <HORatingChart />
+                    </div>
+
+                    {/* TARM Category Chart - wider */}
+                    <div className="col-span-6">
+                        <TARMCategoryChart />
+                    </div>
+                </div>
+
+                {/* Row 3: Additional Charts */}
+                <div className="grid grid-cols-12 gap-4">
+                    {/* TAR Count Chart */}
+                    <div className="col-span-3">
+                        <TARCountChart />
+                    </div>
+
+                    {/* Issues Chart */}
+                    <div className="col-span-3">
+                        <IssuesChart />
+                    </div>
+
+                    {/* Performance Heatmap */}
+                    <div className="col-span-3">
+                        <PerformanceHeatmap />
+                    </div>
+
+                    {/* Insights Section */}
+                    <div className="col-span-3">
+                        <InsightsSection />
+                    </div>
+                </div>
             </main>
 
             <Footer />

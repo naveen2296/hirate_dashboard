@@ -5,15 +5,15 @@ import { useMemo } from 'react';
 
 // Data matching reference image
 const chartData = [
-    { month: 'Sep', CC: 9.43, FC: 9.08, PC: 9.06 },
-    { month: 'Oct', CC: 9.48, FC: 9.04, PC: 9.13 },
-    { month: 'Nov', CC: 9.58, FC: 9.23, PC: 9.22 },
-    { month: 'Dec', CC: 9.66, FC: 9.21, PC: 9.43 }
+    { month: 'Sep 2025', CC: 9.43, FC: 9.08, PC: 9.06 },
+    { month: 'Oct 2025', CC: 9.48, FC: 9.04, PC: 9.13 },
+    { month: 'Nov 2025', CC: 9.58, FC: 9.23, PC: 9.22 },
+    { month: 'Dec 2025', CC: 9.66, FC: 9.21, PC: 9.43 }
 ];
 
 export function ConditionChart() {
     const minY = 8.9;
-    const maxY = 9.65;
+    const maxY = 9.8;
     const chartHeight = 160;
     const chartWidth = 300;
     const paddingX = 35;
@@ -118,7 +118,7 @@ export function ConditionChart() {
                                     {data.PC}
                                 </motion.text>
                                 {/* X-axis */}
-                                <text x={x} y={paddingTop + chartHeight + 18} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="12">
+                                <text x={x} y={paddingTop + chartHeight + 18} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="10">
                                     {data.month}
                                 </text>
                             </g>
