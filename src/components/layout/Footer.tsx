@@ -13,13 +13,15 @@ export function Footer() {
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <Image
-                        src="/logo-star.png"
-                        alt="HiRATE"
-                        width={32}
-                        height={32}
-                        className="object-contain"
-                    />
+                    <div className="bg-white rounded-lg p-1">
+                        <Image
+                            src="/logo-star.png"
+                            alt="HiRATE"
+                            width={28}
+                            height={28}
+                            className="object-contain"
+                        />
+                    </div>
                     <div>
                         <p className="text-sm font-semibold text-white/90">HiRATE Dashboard</p>
                         <p className="text-xs text-white/50">Powered by Cube Highways</p>
@@ -32,14 +34,16 @@ export function Footer() {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <Image
-                        src="/logo-highways.png"
-                        alt="Cube Highways"
-                        width={100}
-                        height={32}
-                        className="object-contain"
-                    />
+                <div className="flex items-center gap-3">
+                    <div className="bg-white rounded-lg px-2 py-1">
+                        <Image
+                            src="/logo-highways.png"
+                            alt="Cube Highways"
+                            width={80}
+                            height={28}
+                            className="object-contain"
+                        />
+                    </div>
                 </div>
             </div>
 
