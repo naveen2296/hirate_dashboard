@@ -1,150 +1,251 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { TrendingUp, TrendingDown, Target } from 'lucide-react';
 
-// Category data with real benchmarks (Average Rating Division) - in specified order
+// Category data - Green if above benchmark, Orange if below (attention)
+// offsetX/offsetY: Adjust individual benchmark line position for each category
 const chartData = [
-    { category: 'Roadways', actual: 9.36, benchmark: 9.13, icon: '🛣️' },
-    { category: 'Road Signage', actual: 9.39, benchmark: 9.31, icon: '🪧' },
-    { category: 'Structures', actual: 9.31, benchmark: 9.12, icon: '🌉' },
-    { category: 'Landscaping', actual: 7.22, benchmark: 6.56, icon: '🌳' },
-    { category: 'ATMS', actual: 9.50, benchmark: 9.65, icon: '🖥️' },
-    { category: 'Project Facilities', actual: 8.99, benchmark: 8.78, icon: '🏢' },
-    { category: 'TMS', actual: 9.61, benchmark: 9.71, icon: '💰' }
+    { category: 'Roadways', actual: 9.36, benchmark: 9.13, offsetX: 0, offsetY: 30 },
+    { category: 'Road Signage', actual: 9.39, benchmark: 9.31, offsetX: 0, offsetY: 40 },
+    { category: 'Structures', actual: 9.31, benchmark: 9.12, offsetX: 0, offsetY: 50 },
+    { category: 'Landscaping', actual: 7.22, benchmark: 6.56, offsetX: 0, offsetY: 50 },
+    { category: 'ATMS', actual: 9.50, benchmark: 9.65, offsetX: 0, offsetY: 12 },
+    { category: 'Project Facilities', actual: 8.99, benchmark: 8.78, offsetX: 0, offsetY: 35 },
+    { category: 'TMS', actual: 9.61, benchmark: 9.71, offsetX: 0, offsetY: 10 }
 ];
 
-const getBarColor = (actual: number, benchmark: number) => {
-    const delta = actual - benchmark;
-    if (delta >= 0.2) return { bar: 'from-emerald-500 to-green-500', text: 'text-emerald-400' };
-    if (delta >= 0) return { bar: 'from-green-400 to-lime-400', text: 'text-green-400' };
-    return { bar: 'from-red-400 to-red-500', text: 'text-red-400' };
-};
-
 export function TARMCategoryChart() {
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    const maxRating = 10;
+    const chartHeight = 200;
+    const chartWidth = 520;
+    const paddingTop = 15;
+    const paddingBottom = 5;
+    const barWidth = 60;
+    const barGap = 14;
+
+    // Scale to show differences better
+    const minY = -5;
+    const maxY = 10;
+
+    // ===== GLOBAL BENCHMARK LINE CONFIG =====
+    const benchmarkLineOffsetY = 0;      // Global Y offset (+ve = down, -ve = up)
+    const benchmarkLineOffsetX = 5;      // Global X padding from bar edges
+    // =========================================
+
+    const baseY = chartHeight - paddingBottom;
+
+    const getY = (value: number) => {
+        const clampedValue = Math.max(minY, Math.min(maxY, value));
+        return paddingTop + ((maxY - clampedValue) / (maxY - minY)) * (baseY - paddingTop);
+    };
+
+    const getBarHeight = (value: number) => {
+        const clampedValue = Math.max(minY, value);
+        return ((clampedValue - minY) / (maxY - minY)) * (baseY - paddingTop);
+    };
+
+    const getX = (index: number) => {
+        const totalBarsWidth = chartData.length * barWidth + (chartData.length - 1) * barGap;
+        const startX = (chartWidth - totalBarsWidth) / 2;
+        return startX + index * (barWidth + barGap) + barWidth / 2;
+    };
+
+    // Generate benchmark line path (uses individual offsets per category)
+    const benchmarkPath = (() => {
+        let path = '';
+        chartData.forEach((d, i) => {
+            const x = getX(i) + (d.offsetX || 0);
+            const y = getY(d.benchmark) + benchmarkLineOffsetY + (d.offsetY || 0);
+            const halfBar = barWidth / 2 + benchmarkLineOffsetX;
+
+            if (i === 0) {
+                path = `M ${x - halfBar},${y}`;
+            }
+            path += ` L ${x + halfBar},${y}`;
+
+            if (i < chartData.length - 1) {
+                const nextD = chartData[i + 1];
+                const nextY = getY(nextD.benchmark) + benchmarkLineOffsetY + (nextD.offsetY || 0);
+                path += ` L ${x + halfBar},${nextY}`;
+                const nextX = getX(i + 1) + (nextD.offsetX || 0);
+                path += ` L ${nextX - halfBar},${nextY}`;
+            }
+        });
+        return path;
+    })();
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="glass-card p-4 h-full flex flex-col"
+            className="glass-card p-3 h-full flex flex-col"
         >
-            {/* Header */}
-            <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                    <Target className="w-4 h-4 text-cyan-400" />
-                    <h3 className="text-sm font-semibold text-white/90">TARM Rating by Category</h3>
-                </div>
-                <div className="flex items-center gap-3 text-[9px]">
+            {/* Header with Legend */}
+            <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-semibold text-white/90">TARM Rating by Category</h3>
+                <div className="flex items-center gap-3 text-[10px]">
                     <div className="flex items-center gap-1">
-                        <div className="w-6 h-1.5 rounded bg-gradient-to-r from-emerald-500 to-lime-400" />
-                        <span className="text-white/50">Above Avg</span>
+                        <div className="w-3 h-3 rounded" style={{ background: 'linear-gradient(180deg, #4ade80 0%, #a3e635 100%)' }} />
+                        <span className="text-white/60">Above Benchmark</span>
                     </div>
                     <div className="flex items-center gap-1">
-                        <div className="w-6 h-1.5 rounded bg-gradient-to-r from-red-400 to-red-500" />
-                        <span className="text-white/50">Below Avg</span>
+                        <div className="w-3 h-3 rounded" style={{ background: 'linear-gradient(180deg, #f97316 0%, #f87171 100%)' }} />
+                        <span className="text-white/60">Below Benchmark</span>
                     </div>
                     <div className="flex items-center gap-1">
-                        <div className="w-0.5 h-3 bg-cyan-400" />
-                        <span className="text-white/50">Div Avg</span>
+                        <div className="w-4 h-0 border-t-2" style={{ border: '1.4px dashed #ef3d3dff' }} />
+                        <span className="text-white/60">Division Avg</span>
                     </div>
                 </div>
             </div>
 
-            {/* Bars */}
-            <div className="flex-1 flex flex-col justify-between gap-2">
-                {chartData.map((data, index) => {
-                    const progressWidth = (data.actual / maxRating) * 100;
-                    const benchmarkPos = (data.benchmark / maxRating) * 100;
-                    const delta = data.actual - data.benchmark;
-                    const colors = getBarColor(data.actual, data.benchmark);
-                    const isHovered = hoveredIndex === index;
+            <div className="flex-1">
+                <svg
+                    viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                    className="w-full h-full"
+                    preserveAspectRatio="xMidYMid meet"
+                >
+                    <defs>
+                        {/* Above benchmark - heatmap 9.0-9.5 gradient (green-400 to lime-400) */}
+                        <linearGradient id="greenBarGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#6ae497ff" />
+                            <stop offset="50%" stopColor="#aee751ff" />
+                        </linearGradient>
+                        {/* Below benchmark - heatmap attention gradient (orange-500 to red-400) */}
+                        <linearGradient id="redBarGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#f97316" />
+                            <stop offset="100%" stopColor="#f87171" />
+                        </linearGradient>
+                    </defs>
 
-                    return (
-                        <motion.div
-                            key={data.category}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.1 + index * 0.08 }}
-                            onMouseEnter={() => setHoveredIndex(index)}
-                            onMouseLeave={() => setHoveredIndex(null)}
-                            className={`
-                                relative flex items-center gap-2 p-2 rounded-lg transition-all cursor-pointer
-                                ${isHovered ? 'bg-white/10 scale-[1.02]' : 'bg-white/5'}
-                            `}
-                        >
-                            {/* Category Name */}
-                            <div className="w-28 flex items-center gap-1.5 shrink-0">
-                                <span className="text-sm">{data.icon}</span>
-                                <span className="text-[10px] text-white/70 font-medium truncate">
-                                    {data.category}
-                                </span>
-                            </div>
+                    {/* Bars */}
+                    {chartData.map((data, i) => {
+                        const x = getX(i) - barWidth / 2;
+                        const barHeight = getBarHeight(data.actual);
+                        const y = baseY - barHeight;
+                        const isAboveBenchmark = data.actual >= data.benchmark;
+                        const delta = data.actual - data.benchmark;
 
-                            {/* Progress Bar Container */}
-                            <div className="flex-1 relative h-5">
-                                {/* Background track */}
-                                <div className="absolute inset-0 bg-white/10 rounded-full overflow-hidden">
-                                    {/* Progress Bar */}
-                                    <motion.div
-                                        className={`h-full rounded-full bg-gradient-to-r ${colors.bar}`}
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${progressWidth}%` }}
-                                        transition={{ duration: 0.8, delay: 0.2 + index * 0.08, ease: 'easeOut' }}
-                                    />
-                                </div>
+                        return (
+                            <g key={data.category}>
+                                {/* Bar */}
+                                <motion.rect
+                                    x={x}
+                                    y={y}
+                                    width={barWidth}
+                                    height={barHeight}
+                                    rx={4}
+                                    ry={4}
+                                    fill={isAboveBenchmark ? 'url(#greenBarGrad)' : 'url(#redBarGrad)'}
+                                    initial={{ height: 0, y: baseY }}
+                                    animate={{ height: barHeight, y: y }}
+                                    transition={{ duration: 0.8, delay: i * 0.07, ease: 'easeOut' }}
+                                />
 
-                                {/* Benchmark Marker */}
-                                <motion.div
-                                    className="absolute top-0 bottom-0 w-0.5 bg-cyan-400"
-                                    style={{ left: `${benchmarkPos}%` }}
-                                    initial={{ opacity: 0, scaleY: 0 }}
-                                    animate={{ opacity: 1, scaleY: 1 }}
-                                    transition={{ delay: 0.5 + index * 0.08 }}
-                                >
-                                    <div className="absolute inset-0 w-1 -left-0.5 bg-cyan-400/30 blur-sm" />
-                                </motion.div>
-
-                                {/* Rating Value on bar */}
-                                <motion.span
-                                    className="absolute top-1/2 -translate-y-1/2 text-[10px] font-bold text-white right-2"
+                                {/* Delta % with trending icon above bar value */}
+                                <motion.g
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.6 + index * 0.08 }}
+                                    transition={{ delay: 0.6 + i * 0.07 }}
+                                >
+                                    {/* Trending icon */}
+                                    <g transform={`translate(${getX(i) - 28}, ${y - 26})`}>
+                                        {isAboveBenchmark ? (
+                                            <path
+                                                d="M2 8l4-4 4 4 6-6m0 0v4m0-4h-4"
+                                                stroke="#4ade80"
+                                                strokeWidth="1.5"
+                                                fill="none"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        ) : (
+                                            <path
+                                                d="M2 2l4 4 4-4 6 6m0 0v-4m0 4h-4"
+                                                stroke="#f97316"
+                                                strokeWidth="1.5"
+                                                fill="none"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        )}
+                                    </g>
+                                    {/* Percentage text */}
+                                    <text
+                                        x={getX(i) + 8}
+                                        y={y - 18}
+                                        textAnchor="middle"
+                                        fill={isAboveBenchmark ? '#4ade80' : '#f97316'}
+                                        fontSize="9"
+                                        fontWeight="bold"
+                                    >
+                                        {isAboveBenchmark ? '+' : ''}{((delta / data.benchmark) * 100).toFixed(1)}%
+                                    </text>
+                                </motion.g>
+
+                                {/* Value label above bar */}
+                                <motion.text
+                                    x={getX(i)}
+                                    y={y - 0}
+                                    textAnchor="middle"
+                                    fill="white"
+                                    fontSize="11"
+                                    fontWeight="bold"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.5 + i * 0.07 }}
                                 >
                                     {data.actual.toFixed(2)}
-                                </motion.span>
-                            </div>
+                                </motion.text>
 
-                            {/* Delta Badge */}
-                            <div className={`
-                                w-14 flex items-center justify-end gap-0.5 shrink-0
-                                ${delta >= 0 ? 'text-emerald-400' : 'text-red-400'}
-                            `}>
-                                {delta >= 0 ? (
-                                    <TrendingUp className="w-3 h-3" />
-                                ) : (
-                                    <TrendingDown className="w-3 h-3" />
+                                {/* Category label inside bar */}
+                                <text
+                                    x={getX(i)}
+                                    y={baseY - 8}
+                                    textAnchor="middle"
+                                    fill="#1a1a2e"
+                                    fontSize="9"
+                                    fontWeight="600"
+                                >
+                                    {data.category.split(' ')[0]}
+                                </text>
+                                {data.category.split(' ').length > 1 && (
+                                    <text
+                                        x={getX(i)}
+                                        y={baseY + 2}
+                                        textAnchor="middle"
+                                        fill="#1a1a2e"
+                                        fontSize="9"
+                                        fontWeight="600"
+                                    >
+                                        {data.category.split(' ').slice(1).join(' ')}
+                                    </text>
                                 )}
-                                <span className="text-[10px] font-bold">
-                                    {delta >= 0 ? '+' : ''}{delta.toFixed(2)}
-                                </span>
-                            </div>
-                        </motion.div>
-                    );
-                })}
-            </div>
+                            </g>
+                        );
+                    })}
 
-            {/* Summary Footer */}
-            <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[9px]">
-                <span className="text-white/40">Division HO Rating vs Avg</span>
-                <span className="text-emerald-400 font-bold">
-                    Avg: {(chartData.reduce((sum, d) => sum + d.actual, 0) / chartData.length).toFixed(2)}
-                </span>
+                    {/* Benchmark line - cyan dashed */}
+                    <path
+                        d={benchmarkPath}
+                        fill="none"
+                        stroke="#ef3d3dff"
+                        strokeWidth="1"
+                        strokeDasharray="8 5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+
+                    {/* Glow effect */}
+                    <path
+                        d={benchmarkPath}
+                        fill="none"
+                        stroke="#ed3c3cff"
+                        strokeWidth="5"
+                        strokeDasharray="8 5"
+                        opacity={0.25}
+                    />
+                </svg>
             </div>
         </motion.div>
     );
