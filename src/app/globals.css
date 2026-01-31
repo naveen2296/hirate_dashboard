@@ -54,32 +54,32 @@ body {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Glass Card - enhanced transparent glass effect */
+/* Glass Card - frosted glass effect */
 .glass-card {
   position: relative;
   overflow: hidden;
-  border-radius: 20px;
-  background: rgba(15, 20, 25, 0.01);
-  border: 1px solid rgba(255, 255, 255, 0.01);
-  backdrop-filter: blur(24px) saturate(400%);
-  -webkit-backdrop-filter: blur(50%) saturate(100%);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
   box-shadow:
-    0 4px 30px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.03),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 0 40px rgba(34, 197, 94, 0.02);
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
 
 .glass-card:hover {
-  background: rgba(18, 24, 30, 0.55);
-  border-color: rgba(34, 197, 94, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
   box-shadow:
-    0 8px 40px rgba(0, 0, 0, 0.35),
-    0 0 30px rgba(34, 197, 94, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 0 50px rgba(34, 197, 94, 0.03);
+    0 12px 40px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
 }
 
 .glass-card::before {
@@ -89,7 +89,7 @@ body {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
 }
 
 .glow-green {

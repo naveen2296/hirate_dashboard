@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 // Data matching reference image
 const chartData = [
@@ -11,7 +11,17 @@ const chartData = [
     { month: 'Dec 2025', CC: 9.66, FC: 9.21, PC: 9.43 }
 ];
 
+interface TooltipData {
+    x: number;
+    month: string;
+    CC: number;
+    FC: number;
+    PC: number;
+}
+
 export function ConditionChart() {
+    const [tooltip, setTooltip] = useState<TooltipData | null>(null);
+
     const minY = 8.9;
     const maxY = 9.8;
     const chartHeight = 160;
@@ -49,7 +59,7 @@ export function ConditionChart() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="glass-card p-3 h-full"
+            className="glass-card p-3 h-full relative"
         >
             <div className="flex items-center justify-between mb-2">
                 <h3 className="text-sm font-semibold text-white/90">Condition Rating</h3>
@@ -69,7 +79,7 @@ export function ConditionChart() {
                 </div>
             </div>
 
-            <div className="h-[200px]">
+            <div className="h-[200px] relative">
                 <svg
                     viewBox={`0 0 ${chartWidth} ${paddingTop + chartHeight + paddingBottom}`}
                     className="w-full h-full"
@@ -100,11 +110,23 @@ export function ConditionChart() {
                     <motion.path d={paths.fc} fill="none" stroke="#f59e0b" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, delay: 0.1 }} />
                     <motion.path d={paths.pc} fill="none" stroke="#a855f7" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, delay: 0.2 }} />
 
-                    {/* Labels */}
+                    {/* Labels - Always visible + Invisible hover areas */}
                     {chartData.map((data, i) => {
                         const x = getX(i);
                         return (
                             <g key={data.month}>
+                                {/* Invisible hover area */}
+                                <rect
+                                    x={x - 20}
+                                    y={paddingTop}
+                                    width={40}
+                                    height={chartHeight}
+                                    fill="transparent"
+                                    className="cursor-pointer"
+                                    onMouseEnter={() => setTooltip({ x, ...data })}
+                                    onMouseLeave={() => setTooltip(null)}
+                                />
+
                                 {/* CC Label - ABOVE */}
                                 <motion.text x={x} y={getY(data.CC) - 8} textAnchor="middle" fill="#22c55e" fontSize="12" fontWeight="bold" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 + i * 0.1 }}>
                                     {data.CC}
@@ -125,6 +147,39 @@ export function ConditionChart() {
                         );
                     })}
                 </svg>
+
+                {/* Hover Tooltip */}
+                {tooltip && (
+                    <div
+                        className="absolute z-50 pointer-events-none"
+                        style={{
+                            left: `${(tooltip.x / chartWidth) * 100}%`,
+                            top: '15%',
+                            transform: 'translateX(-50%)'
+                        }}
+                    >
+                        <div className="bg-gray-900/95 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-2 shadow-xl">
+                            <p className="text-xs font-semibold text-white mb-1">{tooltip.month}</p>
+                            <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-green-500" />
+                                    <span className="text-xs text-white/70">CC:</span>
+                                    <span className="text-xs font-bold text-green-400">{tooltip.CC}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-orange-500" />
+                                    <span className="text-xs text-white/70">FC:</span>
+                                    <span className="text-xs font-bold text-orange-400">{tooltip.FC}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-purple-500" />
+                                    <span className="text-xs text-white/70">PC:</span>
+                                    <span className="text-xs font-bold text-purple-400">{tooltip.PC}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </motion.div>
     );

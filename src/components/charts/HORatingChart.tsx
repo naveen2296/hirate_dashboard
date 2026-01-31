@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 // Data matching reference image
 const chartData = [
@@ -11,7 +11,16 @@ const chartData = [
     { month: 'Dec', rating: 8.88 }
 ];
 
+interface TooltipData {
+    x: number;
+    month: string;
+    rating: number;
+    change: number;
+}
+
 export function HORatingChart() {
+    const [tooltip, setTooltip] = useState<TooltipData | null>(null);
+
     const minY = 8.8;
     const maxY = 9.0;
     const chartHeight = 160;
@@ -48,13 +57,13 @@ export function HORatingChart() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="glass-card p-3 h-full"
+            className="glass-card p-3 h-full relative"
         >
             <div className="mb-2">
                 <h3 className="text-sm font-semibold text-white/90">Project HO Rating by Month</h3>
             </div>
 
-            <div className="h-[200px]">
+            <div className="h-[200px] relative">
                 <svg
                     viewBox={`0 0 ${chartWidth} ${paddingTop + chartHeight + paddingBottom}`}
                     className="w-full h-full"
@@ -93,13 +102,27 @@ export function HORatingChart() {
                         transition={{ duration: 0.8, delay: 0.2 }}
                     />
 
-                    {/* Labels */}
+                    {/* Labels - Always visible + Invisible hover areas */}
                     {chartData.map((data, i) => {
                         const x = getX(i);
                         const y = getY(data.rating);
+                        const prevRating = i > 0 ? chartData[i - 1].rating : data.rating;
+                        const change = data.rating - prevRating;
 
                         return (
                             <g key={data.month}>
+                                {/* Invisible hover area */}
+                                <rect
+                                    x={x - 25}
+                                    y={paddingTop}
+                                    width={50}
+                                    height={chartHeight}
+                                    fill="transparent"
+                                    className="cursor-pointer"
+                                    onMouseEnter={() => setTooltip({ x, month: data.month, rating: data.rating, change })}
+                                    onMouseLeave={() => setTooltip(null)}
+                                />
+
                                 {/* Value label - green if rising, red if falling */}
                                 <motion.text
                                     x={x}
@@ -122,6 +145,34 @@ export function HORatingChart() {
                         );
                     })}
                 </svg>
+
+                {/* Hover Tooltip */}
+                {tooltip && (
+                    <div
+                        className="absolute z-50 pointer-events-none"
+                        style={{
+                            left: `${(tooltip.x / chartWidth) * 100}%`,
+                            top: '10%',
+                            transform: 'translateX(-50%)'
+                        }}
+                    >
+                        <div className="bg-gray-900/95 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-2 shadow-xl">
+                            <p className="text-xs font-semibold text-white mb-1">{tooltip.month} 2025</p>
+                            <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-white/70">Rating:</span>
+                                    <span className="text-sm font-bold text-white">{tooltip.rating.toFixed(2)}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-white/70">Change:</span>
+                                    <span className={`text-xs font-bold ${tooltip.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                        {tooltip.change >= 0 ? '+' : ''}{tooltip.change.toFixed(2)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </motion.div>
     );
