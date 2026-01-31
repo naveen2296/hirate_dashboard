@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 // Data matching reference image
@@ -12,8 +12,16 @@ const chartData = [
     { month: 'Dec', CC: 9.66, FC: 9.21, PC: 9.43 }
 ];
 
+// Line colors for each metric
+const lineColors = {
+    CC: { main: '#4ade80', glow: '#22c55e', name: 'Carriageway' },
+    FC: { main: '#fb923c', glow: '#f97316', name: 'Furniture' },
+    PC: { main: '#c084fc', glow: '#a855f7', name: 'Pavement' }
+};
+
 interface TooltipData {
     x: number;
+    y: number;
     month: string;
     CC: number;
     FC: number;
@@ -22,23 +30,22 @@ interface TooltipData {
 
 export function ConditionChart() {
     const [tooltip, setTooltip] = useState<TooltipData | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const minY = 8.9;
-    const maxY = 9.8;
-    const chartHeight = 160;
-    const chartWidth = 300;
-    const paddingX = 35;
-    const paddingTop = 25;
-    const paddingBottom = 30;
+    const maxY = 9.56;
+    const chartHeight = 140;
+    const chartWidth = 320;
+    const paddingX = 30;
+    const paddingTop = 10;
+    const paddingBottom = 10;
 
     // Calculate rise/fall percentages (Nov to Dec)
-    // Formula: ((Dec - Nov) / Dec) * 100
-    const novData = chartData[2]; // Nov 2025
-    const decData = chartData[3]; // Dec 2025
-
-    const ccChange = ((decData.CC - novData.CC) / decData.CC) * 100;
-    const fcChange = ((decData.FC - novData.FC) / decData.FC) * 100;
-    const pcChange = ((decData.PC - novData.PC) / decData.PC) * 100;
+    const novData = chartData[2];
+    const decData = chartData[3];
+    const ccChange = ((decData.CC - novData.CC) / novData.CC) * 100;
+    const fcChange = ((decData.FC - novData.FC) / novData.FC) * 100;
+    const pcChange = ((decData.PC - novData.PC) / novData.PC) * 100;
     const avgChange = (ccChange + fcChange + pcChange) / 3;
 
     const getY = (value: number) => {
@@ -50,51 +57,90 @@ export function ConditionChart() {
         return paddingX + (index / (chartData.length - 1)) * usableWidth;
     };
 
-    const paths = useMemo(() => {
-        const ccPoints = chartData.map((d, i) => `${getX(i)},${getY(d.CC)}`);
-        const fcPoints = chartData.map((d, i) => `${getX(i)},${getY(d.FC)}`);
-        const pcPoints = chartData.map((d, i) => `${getX(i)},${getY(d.PC)}`);
+    // Generate smooth bezier curve path for a metric
+    const generateSmoothPath = (metric: 'CC' | 'FC' | 'PC') => {
+        const points = chartData.map((d, i) => ({ x: getX(i), y: getY(d[metric]) }));
 
-        return {
-            cc: `M ${ccPoints.join(' L ')}`,
-            fc: `M ${fcPoints.join(' L ')}`,
-            pc: `M ${pcPoints.join(' L ')}`,
-            ccArea: `M ${paddingX},${paddingTop + chartHeight} L ${ccPoints.join(' L ')} L ${chartWidth - paddingX},${paddingTop + chartHeight} Z`,
-            fcArea: `M ${paddingX},${paddingTop + chartHeight} L ${fcPoints.join(' L ')} L ${chartWidth - paddingX},${paddingTop + chartHeight} Z`,
-            pcArea: `M ${paddingX},${paddingTop + chartHeight} L ${pcPoints.join(' L ')} L ${chartWidth - paddingX},${paddingTop + chartHeight} Z`
-        };
-    }, []);
+        if (points.length < 2) return '';
+
+        let path = `M ${points[0].x},${points[0].y}`;
+
+        for (let i = 0; i < points.length - 1; i++) {
+            const p0 = points[i];
+            const p1 = points[i + 1];
+            const midX = (p0.x + p1.x) / 2;
+            path += ` C ${midX},${p0.y} ${midX},${p1.y} ${p1.x},${p1.y}`;
+        }
+
+        return path;
+    };
+
+    // Generate area path for a metric
+    const generateAreaPath = (metric: 'CC' | 'FC' | 'PC') => {
+        const points = chartData.map((d, i) => ({ x: getX(i), y: getY(d[metric]) }));
+        const baseY = paddingTop + chartHeight;
+
+        if (points.length < 2) return '';
+
+        let path = `M ${points[0].x},${baseY}`;
+        path += ` L ${points[0].x},${points[0].y}`;
+
+        for (let i = 0; i < points.length - 1; i++) {
+            const p0 = points[i];
+            const p1 = points[i + 1];
+            const midX = (p0.x + p1.x) / 2;
+            path += ` C ${midX},${p0.y} ${midX},${p1.y} ${p1.x},${p1.y}`;
+        }
+
+        path += ` L ${points[points.length - 1].x},${baseY}`;
+        path += ' Z';
+
+        return path;
+    };
+
+    const ccPath = generateSmoothPath('CC');
+    const fcPath = generateSmoothPath('FC');
+    const pcPath = generateSmoothPath('PC');
+
+    const ccArea = generateAreaPath('CC');
+    const fcArea = generateAreaPath('FC');
+    const pcArea = generateAreaPath('PC');
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="glass-card p-3 h-full relative"
+            transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="glass-card p-3 h-full relative overflow-hidden"
         >
-            <div className="flex items-center justify-between mb-2">
+            {/* Header */}
+            <motion.div
+                className="flex items-center justify-between mb-2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.4 }}
+            >
                 <h3 className="text-sm font-semibold text-white/90">Condition Rating</h3>
                 <div className="flex items-center gap-2 text-xs">
                     <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 rounded-full bg-green-500" />
+                        <div className="w-2 h-2 rounded-full" style={{ background: lineColors.CC.main }} />
                         <span className="text-white/60">CC</span>
                     </div>
                     <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 rounded-full bg-orange-500" />
+                        <div className="w-2 h-2 rounded-full" style={{ background: lineColors.FC.main }} />
                         <span className="text-white/60">FC</span>
                     </div>
                     <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 rounded-full bg-purple-500" />
+                        <div className="w-2 h-2 rounded-full" style={{ background: lineColors.PC.main }} />
                         <span className="text-white/60">PC</span>
                     </div>
-                    {/* Average Change - Icon only */}
                     <div className="w-px h-3 bg-white/20 mx-1" />
                     <div className={`flex items-center gap-0.5 ${avgChange >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                         {avgChange >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                        <span className="font-medium     text-xs">{avgChange >= 0 ? '+' : ''}{avgChange.toFixed(2)}%</span>
+                        <span className="font-medium text-xs">{avgChange >= 0 ? '+' : ''}{avgChange.toFixed(2)}%</span>
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             <div className="h-[200px] relative">
                 <svg
@@ -103,118 +149,366 @@ export function ConditionChart() {
                     preserveAspectRatio="xMidYMid meet"
                 >
                     <defs>
-                        <linearGradient id="ccFill" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#22c55e" stopOpacity="0.5" />
-                            <stop offset="100%" stopColor="#22c55e" stopOpacity="0.1" />
+                        {/* CC Green Gradient */}
+                        <linearGradient id="ccAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#4ade80" stopOpacity="0.5" />
+                            <stop offset="50%" stopColor="#22c55e" stopOpacity="0.2" />
+                            <stop offset="100%" stopColor="#166534" stopOpacity="0.05" />
                         </linearGradient>
-                        <linearGradient id="fcFill" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.4" />
-                            <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.05" />
+
+                        {/* FC Orange Gradient */}
+                        <linearGradient id="fcAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#fb923c" stopOpacity="0.5" />
+                            <stop offset="50%" stopColor="#f97316" stopOpacity="0.2" />
+                            <stop offset="100%" stopColor="#9a3412" stopOpacity="0.05" />
                         </linearGradient>
-                        <linearGradient id="pcFill" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#a855f7" stopOpacity="0.4" />
-                            <stop offset="100%" stopColor="#a855f7" stopOpacity="0.05" />
+
+                        {/* PC Purple Gradient */}
+                        <linearGradient id="pcAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#c084fc" stopOpacity="0.5" />
+                            <stop offset="50%" stopColor="#a855f7" stopOpacity="0.2" />
+                            <stop offset="100%" stopColor="#581c87" stopOpacity="0.05" />
                         </linearGradient>
+
+                        {/* Glow filters */}
+                        <filter id="greenGlow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                            <feMerge>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                        <filter id="orangeGlow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                            <feMerge>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                        <filter id="purpleGlow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+                            <feMerge>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+
+                        {/* Point glow filter */}
+                        <filter id="pointGlow" x="-100%" y="-100%" width="300%" height="300%">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                            <feMerge>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
                     </defs>
 
+                    {/* Vertical grid lines - dotted */}
+                    {chartData.map((_, i) => (
+                        <motion.line
+                            key={`grid-${i}`}
+                            x1={getX(i)}
+                            y1={paddingTop}
+                            x2={getX(i)}
+                            y2={paddingTop + chartHeight}
+                            stroke="rgba(255,255,255,0.08)"
+                            strokeWidth="1"
+                            strokeDasharray="4 4"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3 + i * 0.1 }}
+                        />
+                    ))}
+
                     {/* Area fills */}
-                    <motion.path d={paths.ccArea} fill="url(#ccFill)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} />
-                    <motion.path d={paths.fcArea} fill="url(#fcFill)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.1 }} />
-                    <motion.path d={paths.pcArea} fill="url(#pcFill)" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.2 }} />
+                    <motion.path
+                        d={ccArea}
+                        fill="url(#ccAreaGrad)"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 0.5 }}
+                    />
+                    <motion.path
+                        d={fcArea}
+                        fill="url(#fcAreaGrad)"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 0.6 }}
+                    />
+                    <motion.path
+                        d={pcArea}
+                        fill="url(#pcAreaGrad)"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8, delay: 0.7 }}
+                    />
 
-                    {/* Lines */}
-                    <motion.path d={paths.cc} fill="none" stroke="#22c55e" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2 }} />
-                    <motion.path d={paths.fc} fill="none" stroke="#f59e0b" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, delay: 0.1 }} />
-                    <motion.path d={paths.pc} fill="none" stroke="#a855f7" strokeWidth="2" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, delay: 0.2 }} />
+                    {/* Glow lines */}
+                    <motion.path
+                        d={ccPath}
+                        fill="none"
+                        stroke={lineColors.CC.glow}
+                        strokeWidth="5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        opacity={0.3}
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1.2, delay: 0.6, ease: "easeInOut" }}
+                    />
+                    <motion.path
+                        d={fcPath}
+                        fill="none"
+                        stroke={lineColors.FC.glow}
+                        strokeWidth="5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        opacity={0.3}
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1.2, delay: 0.7, ease: "easeInOut" }}
+                    />
+                    <motion.path
+                        d={pcPath}
+                        fill="none"
+                        stroke={lineColors.PC.glow}
+                        strokeWidth="5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        opacity={0.3}
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1.2, delay: 0.8, ease: "easeInOut" }}
+                    />
 
-                    {/* Labels - Always visible + Invisible hover areas */}
+                    {/* Main lines */}
+                    <motion.path
+                        d={ccPath}
+                        fill="none"
+                        stroke={lineColors.CC.main}
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        filter="url(#greenGlow)"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1.2, delay: 0.6, ease: "easeInOut" }}
+                    />
+                    <motion.path
+                        d={fcPath}
+                        fill="none"
+                        stroke={lineColors.FC.main}
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        filter="url(#orangeGlow)"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1.2, delay: 0.7, ease: "easeInOut" }}
+                    />
+                    <motion.path
+                        d={pcPath}
+                        fill="none"
+                        stroke={lineColors.PC.main}
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        filter="url(#purpleGlow)"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 1.2, delay: 0.8, ease: "easeInOut" }}
+                    />
+
+                    {/* Data points and labels */}
                     {chartData.map((data, i) => {
                         const x = getX(i);
                         const isLast = i === chartData.length - 1;
+                        const isHovered = hoveredIndex === i;
+
                         return (
                             <g key={data.month}>
                                 {/* Invisible hover area */}
                                 <rect
-                                    x={x - 20}
+                                    x={x - 25}
                                     y={paddingTop}
-                                    width={40}
+                                    width={50}
                                     height={chartHeight}
                                     fill="transparent"
                                     className="cursor-pointer"
-                                    onMouseEnter={() => setTooltip({ x, ...data })}
-                                    onMouseLeave={() => setTooltip(null)}
+                                    onMouseEnter={() => {
+                                        setHoveredIndex(i);
+                                        setTooltip({ x, y: getY(data.CC), ...data });
+                                    }}
+                                    onMouseLeave={() => {
+                                        setHoveredIndex(null);
+                                        setTooltip(null);
+                                    }}
                                 />
 
-                                {/* CC Label */}
-                                <motion.text x={x} y={getY(data.CC) - 8} textAnchor="middle" fill="#22c55e" fontSize="12" fontWeight="bold" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 + i * 0.1 }}>
-                                    {data.CC}
-                                </motion.text>
-
-                                {/* CC Rise/Fall % at the end */}
-                                {isLast && (
-                                    <motion.text
-                                        x={x + 22}
-                                        y={getY(data.CC)}
-                                        textAnchor="start"
-                                        fill={ccChange >= 0 ? "#22c55e" : "#ef4444"}
-                                        fontSize="11"
-                                        fontWeight="bold"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 1.3 }}
-                                    >
-                                        {ccChange >= 0 ? '↑' : '↓'}
-                                    </motion.text>
+                                {/* Hover pulse rings */}
+                                {isHovered && (
+                                    <>
+                                        <motion.circle cx={x} cy={getY(data.CC)} r={10} fill="none" stroke={lineColors.CC.main} strokeWidth="1.5"
+                                            initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: [0.5, 0], scale: [0.8, 1.5] }} transition={{ duration: 1, repeat: Infinity }} />
+                                        <motion.circle cx={x} cy={getY(data.FC)} r={10} fill="none" stroke={lineColors.FC.main} strokeWidth="1.5"
+                                            initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: [0.5, 0], scale: [0.8, 1.5] }} transition={{ duration: 1, repeat: Infinity, delay: 0.1 }} />
+                                        <motion.circle cx={x} cy={getY(data.PC)} r={10} fill="none" stroke={lineColors.PC.main} strokeWidth="1.5"
+                                            initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: [0.5, 0], scale: [0.8, 1.5] }} transition={{ duration: 1, repeat: Infinity, delay: 0.2 }} />
+                                    </>
                                 )}
 
-                                {/* FC Label */}
-                                <motion.text x={x} y={getY(data.FC) + 16} textAnchor="middle" fill="#f59e0b" fontSize="12" fontWeight="bold" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 + i * 0.1 }}>
-                                    {data.FC}
-                                </motion.text>
-
-                                {/* FC Rise/Fall % at the end */}
+                                {/* Point glow (always visible on last point) - CC */}
                                 {isLast && (
-                                    <motion.text
-                                        x={x + 22}
-                                        y={getY(data.FC) + 4}
-                                        textAnchor="start"
-                                        fill={fcChange >= 0 ? "#22c55e" : "#ef4444"}
-                                        fontSize="11"
-                                        fontWeight="bold"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 1.4 }}
-                                    >
-                                        {fcChange >= 0 ? '↑' : '↓'}
-                                    </motion.text>
+                                    <motion.circle
+                                        cx={x}
+                                        cy={getY(data.CC)}
+                                        r={8}
+                                        fill={lineColors.CC.main}
+                                        opacity={0.3}
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: [1, 2, 1] }}
+                                        transition={{ duration: 2, repeat: Infinity, delay: 2 }}
+                                    />
+                                )}
+                                {/* Data points - CC */}
+                                {isLast && (
+                                    <motion.circle
+                                        cx={x}
+                                        cy={getY(data.CC)}
+                                        r={5}
+                                        fill={lineColors.CC.main}
+                                        stroke="#1e1b4b"
+                                        strokeWidth="1.5"
+                                        filter="url(#pointGlow)"
+                                        initial={{ scale: 0, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        transition={{ delay: 1.0 + i * 0.1, type: "spring", stiffness: 200 }}
+                                    />
                                 )}
 
-                                {/* PC Label */}
-                                <motion.text x={x} y={getY(data.PC) - 8} textAnchor="middle" fill="#a855f7" fontSize="12" fontWeight="bold" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 + i * 0.1 }}>
-                                    {data.PC}
-                                </motion.text>
-
-                                {/* PC Rise/Fall % at the end */}
+                                {/* Point glow (always visible on last point) - FC */}
                                 {isLast && (
-                                    <motion.text
-                                        x={x + 22}
-                                        y={getY(data.PC)}
-                                        textAnchor="start"
-                                        fill={pcChange >= 0 ? "#22c55e" : "#ef4444"}
-                                        fontSize="11"
-                                        fontWeight="bold"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 1.5 }}
-                                    >
-                                        {pcChange >= 0 ? '↑' : '↓'}
-                                    </motion.text>
+                                    <motion.circle
+                                        cx={x}
+                                        cy={getY(data.FC)}
+                                        r={8}
+                                        fill={lineColors.FC.main}
+                                        opacity={0.3}
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: [1, 2, 1] }}
+                                        transition={{ duration: 2, repeat: Infinity, delay: 2.2 }}
+                                    />
+                                )}
+                                {/* Data points - FC */}
+                                {isLast && (
+                                    <motion.circle
+                                        cx={x}
+                                        cy={getY(data.FC)}
+                                        r={5}
+                                        fill={lineColors.FC.main}
+                                        stroke="#1e1b4b"
+                                        strokeWidth="1.5"
+                                        filter="url(#pointGlow)"
+                                        initial={{ scale: 0, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        transition={{ delay: 1.1 + i * 0.1, type: "spring", stiffness: 200 }}
+                                    />
                                 )}
 
-                                {/* X-axis */}
-                                <text x={x} y={paddingTop + chartHeight + 18} textAnchor="middle" fill="rgba(255,255,255,0.5)" fontSize="10">
+                                {/* Point glow (always visible on last point) - PC */}
+                                {isLast && (
+                                    <motion.circle
+                                        cx={x}
+                                        cy={getY(data.PC)}
+                                        r={8}
+                                        fill={lineColors.PC.main}
+                                        opacity={0.3}
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: [1, 2, 1] }}
+                                        transition={{ duration: 2, repeat: Infinity, delay: 2.4 }}
+                                    />
+                                )}
+                                {/* Data points - PC */}
+                                {isLast && (
+                                    <motion.circle
+                                        cx={x}
+                                        cy={getY(data.PC)}
+                                        r={5}
+                                        fill={lineColors.PC.main}
+                                        stroke="#1e1b4b"
+                                        strokeWidth="1.5"
+                                        filter="url(#pointGlow)"
+                                        initial={{ scale: 0, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        transition={{ delay: 1.2 + i * 0.1, type: "spring", stiffness: 200 }}
+                                    />
+                                )}
+
+                                {/* Value labels - always visible */}
+                                <motion.text x={x} y={getY(data.CC) - 10} textAnchor="middle" fill={lineColors.CC.main} fontSize="11" fontWeight="bold"
+                                    initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.0 + i * 0.1 }}>
+                                    {data.CC.toFixed(2)}
+                                </motion.text>
+                                <motion.text x={x} y={getY(data.FC) - 10} textAnchor="middle" fill={lineColors.FC.main} fontSize="11" fontWeight="bold"
+                                    initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.05 + i * 0.1 }}>
+                                    {data.FC.toFixed(2)}
+                                </motion.text>
+                                <motion.text x={x} y={getY(data.PC) + 20} textAnchor="middle" fill={lineColors.PC.main} fontSize="11" fontWeight="bold"
+                                    initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 + i * 0.1 }}>
+                                    {data.PC.toFixed(2)}
+                                </motion.text>
+
+                                {/* Triangle Rise/Fall indicators on last point */}
+                                {isLast && (
+                                    <>
+                                        {/* CC Triangle */}
+                                        <motion.path
+                                            d={ccChange >= 0
+                                                ? `M${x + 12},${getY(data.CC) + 4} l5,-8 l5,8 Z`
+                                                : `M${x + 12},${getY(data.CC) - 4} l5,8 l5,-8 Z`}
+                                            fill={ccChange >= 0 ? "#4ade80" : "#f87171"}
+                                            initial={{ opacity: 0, scale: 0 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ delay: 1.3, type: "spring", stiffness: 300 }}
+                                        />
+
+                                        {/* FC Triangle */}
+                                        <motion.path
+                                            d={fcChange >= 0
+                                                ? `M${x + 12},${getY(data.FC) + 4} l5,-8 l5,8 Z`
+                                                : `M${x + 12},${getY(data.FC) - 4} l5,8 l5,-8 Z`}
+                                            fill={fcChange >= 0 ? "#4ade80" : "#f87171"}
+                                            initial={{ opacity: 0, scale: 0 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ delay: 1.4, type: "spring", stiffness: 300 }}
+                                        />
+
+                                        {/* PC Triangle */}
+                                        <motion.path
+                                            d={pcChange >= 0
+                                                ? `M${x + 12},${getY(data.PC) + 4} l5,-8 l5,8 Z`
+                                                : `M${x + 12},${getY(data.PC) - 4} l5,8 l5,-8 Z`}
+                                            fill={pcChange >= 0 ? "#4ade80" : "#f87171"}
+                                            initial={{ opacity: 0, scale: 0 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ delay: 1.5, type: "spring", stiffness: 300 }}
+                                        />
+                                    </>
+                                )}
+
+                                {/* X-axis label */}
+                                <motion.text
+                                    x={x}
+                                    y={paddingTop + chartHeight + 16}
+                                    textAnchor="middle" fontWeight="bold"
+                                    fill="rgba(255,255,255,0.5)"
+                                    fontSize="12"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.4 + i * 0.1 }}
+                                >
                                     {data.month}
-                                </text>
+                                </motion.text>
                             </g>
                         );
                     })}
@@ -222,37 +516,53 @@ export function ConditionChart() {
 
                 {/* Hover Tooltip */}
                 {tooltip && (
-                    <div
+                    <motion.div
                         className="absolute z-50 pointer-events-none"
                         style={{
                             left: `${(tooltip.x / chartWidth) * 100}%`,
-                            top: '15%',
+                            top: '10%',
                             transform: 'translateX(-50%)'
                         }}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.15 }}
                     >
-                        <div className="bg-gray-900/95 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-2 shadow-xl">
-                            <p className="text-xs font-semibold text-white mb-1">{tooltip.month}</p>
+                        <div
+                            className="rounded-xl px-3 py-2 shadow-2xl"
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.95) 0%, rgba(49, 46, 129, 0.95) 100%)',
+                                border: '1px solid rgba(255,255,255,0.15)',
+                                backdropFilter: 'blur(10px)'
+                            }}
+                        >
+                            <p className="text-xs font-semibold text-white mb-1.5">{tooltip.month} 2025</p>
                             <div className="flex flex-col gap-1">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                                    <span className="text-xs text-white/70">CC:</span>
-                                    <span className="text-xs font-bold text-green-400">{tooltip.CC}</span>
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-2 h-2 rounded-full" style={{ background: lineColors.CC.main }} />
+                                        <span className="text-[10px] text-white/70">CC</span>
+                                    </div>
+                                    <span className="text-xs font-bold" style={{ color: lineColors.CC.main }}>{tooltip.CC.toFixed(2)}</span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-orange-500" />
-                                    <span className="text-xs text-white/70">FC:</span>
-                                    <span className="text-xs font-bold text-orange-400">{tooltip.FC}</span>
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-2 h-2 rounded-full" style={{ background: lineColors.FC.main }} />
+                                        <span className="text-[10px] text-white/70">FC</span>
+                                    </div>
+                                    <span className="text-xs font-bold" style={{ color: lineColors.FC.main }}>{tooltip.FC.toFixed(2)}</span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-purple-500" />
-                                    <span className="text-xs text-white/70">PC:</span>
-                                    <span className="text-xs font-bold text-purple-400">{tooltip.PC}</span>
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-2 h-2 rounded-full" style={{ background: lineColors.PC.main }} />
+                                        <span className="text-[10px] text-white/70">PC</span>
+                                    </div>
+                                    <span className="text-xs font-bold" style={{ color: lineColors.PC.main }}>{tooltip.PC.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 )}
             </div>
-        </motion.div>
+        </motion.div >
     );
 }
