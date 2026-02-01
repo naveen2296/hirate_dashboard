@@ -71,14 +71,15 @@ function DashboardContent() {
                     animate="animate"
                     exit="exit"
                     variants={pageVariants}
+                    className="overflow-visible"
                 >
                     <HeaderProvider>
-                        <div className="min-h-screen relative">
+                        <div className="min-h-screen relative overflow-visible">
                             {/* Animated Background */}
                             <AnimatedBackground />
 
                             {/* Main Content */}
-                            <div className="relative z-10">
+                            <div className="relative z-10 overflow-visible">
                                 {/* Header */}
                                 <Header />
 
@@ -89,8 +90,8 @@ function DashboardContent() {
                                 <StatsGrid />
 
                                 {/* Row 2: Charts (Condition, HO Rating, Gauge, Issues) */}
-                                <section className="px-6 py-4">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <section className="px-4 py-4 overflow-visible">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 overflow-visible">
                                         <ConditionChart />
                                         <HORatingChart />
                                         <RatingGauge />
@@ -99,25 +100,25 @@ function DashboardContent() {
                                 </section>
 
                                 {/* Row 3: India Map + Pyramid Rankings + Performance Heatmap */}
-                                <section className="px-6 py-4">
-                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                                        <div>
+                                <section className="px-4 py-4 overflow-visible">
+                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-visible">
+                                        <div className="overflow-visible">
                                             <IndiaMap />
                                         </div>
-                                        <div>
+                                        <div className="overflow-visible">
                                             <PyramidRankings />
                                         </div>
-                                        <div>
+                                        <div className="overflow-visible">
                                             <PerformanceHeatmap />
                                         </div>
                                     </div>
                                 </section>
 
                                 {/* Row 4: TARM Category Chart (left) + Monitoring Categories & Footer (right) */}
-                                <section className="px-6 py-3 pb-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <section className="px-4 py-3 pb-6 overflow-visible">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-visible">
                                         <TARMCategoryChart />
-                                        <div className="flex flex-col gap-3">
+                                        <div className="flex flex-col gap-3 overflow-visible">
                                             <CategoriesSection />
                                             <Footer />
                                         </div>

@@ -24,8 +24,8 @@ const colorMap: Record<string, { accent: string; iconBg: string; iconColor: stri
 
 export function StatsGrid() {
     return (
-        <section className="px-6 py-2">
-            <div className="grid grid-cols-5 gap-3">
+        <section className="px-6 py-2 overflow-visible">
+            <div className="grid grid-cols-5 gap-3 overflow-visible">
                 {statsData.map((stat, index) => {
                     const colors = colorMap[stat.color] || colorMap['blue'];
 
@@ -44,7 +44,7 @@ export function StatsGrid() {
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3, delay: index * 0.08 }}
-                            className="glass-card relative overflow-hidden"
+                            className="glass-card relative overflow-visible"
                         >
                             {/* Top accent bar */}
                             <div

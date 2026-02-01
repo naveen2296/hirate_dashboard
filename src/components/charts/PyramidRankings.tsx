@@ -79,7 +79,7 @@ export function PyramidRankings() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="glass-card p-3 h-full relative flex flex-col"
+            className="glass-card p-3 h-full relative flex flex-col overflow-visible"
         >
             {/* Header with legend on right */}
             <div className="flex items-start justify-between mb-2">

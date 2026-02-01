@@ -102,7 +102,7 @@ export function IndiaMap() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="glass-card p-3 h-full relative overflow-hidden"
+            className="glass-card p-3 h-full relative overflow-visible"
         >
             <div className="flex items-center justify-between mb-1">
                 <div>
@@ -224,16 +224,24 @@ export function IndiaMap() {
                     })}
                 </div>
 
-                {/* Tooltip - positioned near marker */}
+                {/* Tooltip - positioned near marker with smart positioning */}
                 {tooltip && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="absolute z-30 pointer-events-none"
+                        className="absolute z-[100] pointer-events-none"
                         style={{
-                            left: `${tooltip.posX}%`,
+                            left: tooltip.posX > 70
+                                ? `${tooltip.posX - 5}%`
+                                : tooltip.posX < 30
+                                    ? `${tooltip.posX + 5}%`
+                                    : `${tooltip.posX}%`,
                             top: `${Math.max(tooltip.posY - 12, 5)}%`,
-                            transform: 'translate(-50%, -100%)'
+                            transform: tooltip.posX > 70
+                                ? 'translate(-100%, -100%)'
+                                : tooltip.posX < 30
+                                    ? 'translate(0%, -100%)'
+                                    : 'translate(-50%, -100%)'
                         }}
                     >
                         <div className="bg-gray-900/95 backdrop-blur-sm border border-white/20 rounded px-2 py-1.5 shadow-xl">

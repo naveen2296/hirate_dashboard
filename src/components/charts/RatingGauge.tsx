@@ -29,7 +29,7 @@ export function RatingGauge() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="glass-card p-4 h-full flex flex-col"
+            className="glass-card p-4 h-full flex flex-col overflow-visible"
         >
             {/* Header - removed top indicator */}
             <div className="mb-2">

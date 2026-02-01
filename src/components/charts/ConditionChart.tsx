@@ -6,7 +6,7 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 
 // Data matching reference image
 const chartData = [
-    { month: 'Sep', CC: 9.43, FC: 9.08, PC: 9.06 },
+    { month: 'Sept', CC: 9.43, FC: 9.08, PC: 9.06 },
     { month: 'Oct', CC: 9.48, FC: 9.04, PC: 9.13 },
     { month: 'Nov', CC: 9.58, FC: 9.23, PC: 9.22 },
     { month: 'Dec', CC: 9.66, FC: 9.21, PC: 9.43 }
@@ -111,7 +111,7 @@ export function ConditionChart() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="glass-card p-3 h-full relative overflow-hidden"
+            className="glass-card p-3 h-full relative overflow-visible"
         >
             {/* Header */}
             <motion.div
@@ -345,15 +345,12 @@ export function ConditionChart() {
                                     }}
                                 />
 
-                                {/* Hover pulse rings */}
+                                {/* Hover highlight rings - no blinking animation */}
                                 {isHovered && (
                                     <>
-                                        <motion.circle cx={x} cy={getY(data.CC)} r={10} fill="none" stroke={lineColors.CC.main} strokeWidth="1.5"
-                                            initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: [0.5, 0], scale: [0.8, 1.5] }} transition={{ duration: 1, repeat: Infinity }} />
-                                        <motion.circle cx={x} cy={getY(data.FC)} r={10} fill="none" stroke={lineColors.FC.main} strokeWidth="1.5"
-                                            initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: [0.5, 0], scale: [0.8, 1.5] }} transition={{ duration: 1, repeat: Infinity, delay: 0.1 }} />
-                                        <motion.circle cx={x} cy={getY(data.PC)} r={10} fill="none" stroke={lineColors.PC.main} strokeWidth="1.5"
-                                            initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: [0.5, 0], scale: [0.8, 1.5] }} transition={{ duration: 1, repeat: Infinity, delay: 0.2 }} />
+                                        <circle cx={x} cy={getY(data.CC)} r={10} fill="none" stroke={lineColors.CC.main} strokeWidth="1.5" opacity={0.4} style={{ pointerEvents: 'none' }} />
+                                        <circle cx={x} cy={getY(data.FC)} r={10} fill="none" stroke={lineColors.FC.main} strokeWidth="1.5" opacity={0.4} style={{ pointerEvents: 'none' }} />
+                                        <circle cx={x} cy={getY(data.PC)} r={10} fill="none" stroke={lineColors.PC.main} strokeWidth="1.5" opacity={0.4} style={{ pointerEvents: 'none' }} />
                                     </>
                                 )}
 
@@ -517,11 +514,19 @@ export function ConditionChart() {
                 {/* Hover Tooltip */}
                 {tooltip && (
                     <motion.div
-                        className="absolute z-50 pointer-events-none"
+                        className="absolute z-[100] pointer-events-none"
                         style={{
-                            left: `${(tooltip.x / chartWidth) * 100}%`,
+                            left: tooltip.x > chartWidth * 0.7
+                                ? `${(tooltip.x / chartWidth) * 100 - 10}%`
+                                : tooltip.x < chartWidth * 0.3
+                                    ? `${(tooltip.x / chartWidth) * 100 + 10}%`
+                                    : `${(tooltip.x / chartWidth) * 100}%`,
                             top: '10%',
-                            transform: 'translateX(-50%)'
+                            transform: tooltip.x > chartWidth * 0.7
+                                ? 'translateX(-100%)'
+                                : tooltip.x < chartWidth * 0.3
+                                    ? 'translateX(0)'
+                                    : 'translateX(-50%)'
                         }}
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}

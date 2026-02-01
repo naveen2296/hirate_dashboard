@@ -82,7 +82,7 @@ export function TARMCategoryChart() {
                 delay: 0.3,
                 ease: [0.25, 0.46, 0.45, 0.94] // Custom easing
             }}
-            className="glass-card p-3 h-full flex flex-col"
+            className="glass-card p-3 h-full flex flex-col overflow-visible"
         >
             {/* Header with Legend - slide in from left */}
             <motion.div

@@ -129,7 +129,7 @@ export function HORatingChart() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="glass-card p-3 h-full relative overflow-hidden"
+            className="glass-card p-3 h-full relative overflow-visible"
         >
             {/* Header */}
             <motion.div
@@ -426,11 +426,19 @@ export function HORatingChart() {
                 {/* Hover Tooltip */}
                 {tooltip && (
                     <motion.div
-                        className="absolute z-50 pointer-events-none"
+                        className="absolute z-[100] pointer-events-none"
                         style={{
-                            left: `${(tooltip.x / chartWidth) * 100}%`,
+                            left: tooltip.x > chartWidth * 0.7
+                                ? `${(tooltip.x / chartWidth) * 100 - 5}%`
+                                : tooltip.x < chartWidth * 0.3
+                                    ? `${(tooltip.x / chartWidth) * 100 + 5}%`
+                                    : `${(tooltip.x / chartWidth) * 100}%`,
                             top: '15%',
-                            transform: 'translateX(-50%)'
+                            transform: tooltip.x > chartWidth * 0.7
+                                ? 'translateX(-100%)'
+                                : tooltip.x < chartWidth * 0.3
+                                    ? 'translateX(0)'
+                                    : 'translateX(-50%)'
                         }}
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}

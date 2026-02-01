@@ -52,7 +52,7 @@ export function PerformanceHeatmap() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="glass-card p-3 h-full overflow-hidden flex flex-col"
+            className="glass-card p-3 h-full overflow-visible flex flex-col"
         >
             {/* Header */}
             <div className="flex items-center justify-between mb-2">
@@ -116,8 +116,8 @@ export function PerformanceHeatmap() {
             </div>
 
             {/* Heatmap Grid */}
-            <div className="flex-1 overflow-auto custom-scrollbar">
-                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-1">
+            <div className="flex-1 overflow-visible custom-scrollbar">
+                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-1 overflow-visible">
                     {filteredData.map((item, index) => (
                         <motion.div
                             key={item.name}
@@ -147,7 +147,14 @@ export function PerformanceHeatmap() {
                                 <motion.div
                                     initial={{ opacity: 0, y: 5 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="absolute -top-10 left-1/2 -translate-x-1/2 z-20 px-2 py-1 rounded bg-gray-900/95 backdrop-blur border border-white/20 whitespace-nowrap shadow-xl"
+                                    className="absolute -top-10 left-1/2 z-[100] px-2 py-1 rounded bg-gray-900/95 backdrop-blur border border-white/20 whitespace-nowrap shadow-xl"
+                                    style={{
+                                        transform: (index % 6) >= 4
+                                            ? 'translateX(-80%)'
+                                            : (index % 6) <= 1
+                                                ? 'translateX(-20%)'
+                                                : 'translateX(-50%)'
+                                    }}
                                 >
                                     <p className="text-[9px] text-white font-medium">{item.name}</p>
                                     <p className="text-[8px] text-white/70">Rating: <span className="text-cyan-400 font-bold">{item.value.toFixed(2)}</span></p>

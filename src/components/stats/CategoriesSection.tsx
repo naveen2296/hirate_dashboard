@@ -69,13 +69,13 @@ export function CategoriesSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.55 }}
-            className="glass-card p-4"
+            className="glass-card p-4 overflow-visible"
         >
             <div className="mb-3">
                 <h3 className="text-sm font-semibold text-white/90">Monitoring Categories</h3>
             </div>
 
-            <div className="grid grid-cols-7 gap-3">
+            <div className="grid grid-cols-7 gap-3 overflow-visible">
                 {categories.map((category, index) => {
                     const style = categoryStyles[category.icon] || categoryStyles['road'];
                     const IconComponent = style.icon;

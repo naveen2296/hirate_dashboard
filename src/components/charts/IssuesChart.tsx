@@ -83,7 +83,7 @@ export function IssuesChart() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
-            className="glass-card p-4 h-full relative"
+            className="glass-card p-4 h-full relative overflow-visible"
         >
             {/* Header with legend */}
             <div className="flex items-center justify-between mb-2">
@@ -232,11 +232,19 @@ export function IssuesChart() {
                 {/* Hover Tooltip */}
                 {tooltip && (
                     <div
-                        className="absolute z-50 pointer-events-none"
+                        className="absolute z-[100] pointer-events-none"
                         style={{
-                            left: `${(tooltip.x / chartWidth) * 100}%`,
+                            left: tooltip.x > chartWidth * 0.7
+                                ? `${(tooltip.x / chartWidth) * 100 - 10}%`
+                                : tooltip.x < chartWidth * 0.3
+                                    ? `${(tooltip.x / chartWidth) * 100 + 10}%`
+                                    : `${(tooltip.x / chartWidth) * 100}%`,
                             top: '5%',
-                            transform: 'translateX(-50%)'
+                            transform: tooltip.x > chartWidth * 0.7
+                                ? 'translateX(-100%)'
+                                : tooltip.x < chartWidth * 0.3
+                                    ? 'translateX(0)'
+                                    : 'translateX(-50%)'
                         }}
                     >
                         <div className="bg-gray-900/95 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-2 shadow-xl">
