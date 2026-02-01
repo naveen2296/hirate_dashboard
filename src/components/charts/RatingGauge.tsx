@@ -34,7 +34,7 @@ export function RatingGauge() {
             {/* Header - removed top indicator */}
             <div className="mb-2">
                 <h3 className="text-sm font-semibold text-white/90">Project Rating by Month</h3>
-                <p className="text-xs text-white/50">FY 25-26 Average</p>
+                <p className="text-xs text-white/50">This Month Rating</p>
             </div>
 
             <div className="flex-1 flex items-center justify-center">

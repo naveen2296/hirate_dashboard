@@ -67,7 +67,7 @@ export function Footer() {
             {/* Copyright */}
             <div className="mt-2 pt-2 border-t border-white/5 text-center">
                 <p className="text-[9px] text-white/30">
-                    © 2025 Cube Highways Technologies Pvt. Ltd. All rights reserved. | HiRATE v2.0
+                    © Cube Highways Technologies Pvt. Ltd. All rights reserved. | HiRATE v2.0
                 </p>
             </div>
         </motion.footer>
