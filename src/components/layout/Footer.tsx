@@ -31,22 +31,11 @@ export function Footer() {
                         className="rounded-lg"
                     />
                     <div>
-                        <span className="text-xs font-semibold text-white/90">
-                            HiRATE Dashboard
-                        </span>
-                        <p className="text-[9px] text-white/40">Performance Analytics</p>
+                        <span className="text-xs font-semibold text-white/90 whitespace-nowrap">HiRATE Dashboard</span>
+                        <p className="text-[9px] text-white/40 -mt-0.5 whitespace-nowrap">Performance Analytics</p>
                     </div>
                 </div>
 
-                {/* Center - Update info */}
-                <div className="text-center">
-                    <p className="text-[10px] text-white/50">
-                        Last updated: <span className="text-white/70">{currentDate}</span>
-                    </p>
-                    <p className="text-[9px] text-white/30">
-                        Data refreshes every month
-                    </p>
-                </div>
 
                 {/* Right - Company logos - Click to show header */}
                 <div className="flex items-center gap-2">
@@ -78,7 +67,7 @@ export function Footer() {
             {/* Copyright */}
             <div className="mt-2 pt-2 border-t border-white/5 text-center">
                 <p className="text-[9px] text-white/30">
-                    © 2025 Cube Highways Technologies. All rights reserved. | HiRATE v2.0
+                    © 2025 Cube Highways Technologies Pvt. Ltd. All rights reserved. | HiRATE v2.0
                 </p>
             </div>
         </motion.footer>

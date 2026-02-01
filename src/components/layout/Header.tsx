@@ -26,15 +26,40 @@ export function Header() {
                         {/* Logo Section */}
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-3">
-                                <Image
-                                    src="/logo-star.png"
-                                    alt="HiRATE"
-                                    width={40}
-                                    height={40}
-                                    className="rounded-lg"
-                                />
+                                <motion.div
+                                    className="relative"
+                                    animate={{
+                                        boxShadow: [
+                                            '0 0 10px rgba(74, 222, 128, 0.3), 0 0 20px rgba(74, 222, 128, 0.2), 0 0 30px rgba(74, 222, 128, 0.1)',
+                                            '0 0 15px rgba(74, 222, 128, 0.5), 0 0 30px rgba(74, 222, 128, 0.3), 0 0 45px rgba(74, 222, 128, 0.2)',
+                                            '0 0 10px rgba(74, 222, 128, 0.3), 0 0 20px rgba(74, 222, 128, 0.2), 0 0 30px rgba(74, 222, 128, 0.1)'
+                                        ]
+                                    }}
+                                    transition={{
+                                        duration: 2,
+                                        repeat: Infinity,
+                                        ease: "easeInOut"
+                                    }}
+                                    style={{ borderRadius: '12px' }}
+                                >
+                                    <Image
+                                        src="/logo-star.png"
+                                        alt="HiRATE"
+                                        width={40}
+                                        height={40}
+                                        className="rounded-lg"
+                                    />
+                                </motion.div>
                                 <div>
-                                    <h1 className="text-xl font-bold text-white">
+                                    <h1
+                                        className="text-xl font-bold"
+                                        style={{
+                                            background: 'linear-gradient(90deg, #4ade80 0%, #22c55e 50%, #4ade80 100%)',
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent',
+                                            textShadow: '0 0 20px rgba(74, 222, 128, 0.5), 0 0 40px rgba(74, 222, 128, 0.3)'
+                                        }}
+                                    >
                                         HiRATE
                                     </h1>
                                     <p className="text-[10px] text-white/50 -mt-0.5">Performance Analytics</p>

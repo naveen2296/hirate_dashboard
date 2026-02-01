@@ -8,22 +8,22 @@ const chartData = [
     { category: 'Roadways', actual: 9.36, benchmark: 9.13, offsetX: 0, offsetY: 30 },
     { category: 'Road Signage', actual: 9.39, benchmark: 9.31, offsetX: 0, offsetY: 40 },
     { category: 'Structures', actual: 9.31, benchmark: 9.12, offsetX: 0, offsetY: 50 },
-    { category: 'Landscaping', actual: 7.22, benchmark: 6.56, offsetX: 0, offsetY: 50 },
-    { category: 'ATMS', actual: 9.50, benchmark: 9.65, offsetX: 0, offsetY: 12 },
-    { category: 'Project Facilities', actual: 8.99, benchmark: 8.78, offsetX: 0, offsetY: 35 },
-    { category: 'TMS', actual: 9.61, benchmark: 9.71, offsetX: 0, offsetY: 10 }
+    { category: 'Landscaping', actual: 7.22, benchmark: 6.56, offsetX: 0, offsetY: 65 },
+    { category: 'ATMS', actual: 9.50, benchmark: 9.65, offsetX: 0, offsetY: 20 },
+    { category: 'Project Facilities', actual: 8.99, benchmark: 8.78, offsetX: 0, offsetY: 40 },
+    { category: 'TMS', actual: 9.61, benchmark: 9.71, offsetX: 0, offsetY: 20 }
 ];
 
 export function TARMCategoryChart() {
-    const chartHeight = 200;
+    const chartHeight = 210;
     const chartWidth = 520;
-    const paddingTop = 15;
-    const paddingBottom = 5;
+    const paddingTop = 20;
+    const paddingBottom = 15;
     const barWidth = 60;
     const barGap = 14;
 
-    // Scale to show differences better
-    const minY = -5;
+    // Scale to show differences better - minY of 0 ensures all bars are visible
+    const minY = 0;
     const maxY = 10;
 
     // ===== GLOBAL BENCHMARK LINE CONFIG =====

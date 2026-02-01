@@ -26,11 +26,11 @@ export function HORatingChart() {
 
     const minY = 8.75;
     const maxY = 9.02;
-    const chartHeight = 180;
+    const chartHeight = 160;
     const chartWidth = 320;
-    const paddingX = 30;
-    const paddingTop = 10;
-    const paddingBottom = 10;
+    const paddingX = 35;
+    const paddingTop = 15;
+    const paddingBottom = 25;
 
     // Calculate rise/fall percentage (Nov to Dec)
     const novData = chartData[2];

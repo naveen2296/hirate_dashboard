@@ -6,7 +6,7 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 
 // Data matching reference image
 const chartData = [
-    { month: 'Sept', CC: 9.43, FC: 9.08, PC: 9.06 },
+    { month: 'Sep', CC: 9.43, FC: 9.08, PC: 9.06 },
     { month: 'Oct', CC: 9.48, FC: 9.04, PC: 9.13 },
     { month: 'Nov', CC: 9.58, FC: 9.23, PC: 9.22 },
     { month: 'Dec', CC: 9.66, FC: 9.21, PC: 9.43 }
@@ -33,12 +33,12 @@ export function ConditionChart() {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const minY = 8.9;
-    const maxY = 9.56;
-    const chartHeight = 140;
+    const maxY = 9.75;
+    const chartHeight = 130;
     const chartWidth = 320;
-    const paddingX = 30;
-    const paddingTop = 10;
-    const paddingBottom = 10;
+    const paddingX = 35;
+    const paddingTop = 15;
+    const paddingBottom = 25;
 
     // Calculate rise/fall percentages (Nov to Dec)
     const novData = chartData[2];
@@ -345,12 +345,12 @@ export function ConditionChart() {
                                     }}
                                 />
 
-                                {/* Hover highlight rings - no blinking animation */}
+                                {/* Hover glow rings - static, no animation */}
                                 {isHovered && (
                                     <>
-                                        <circle cx={x} cy={getY(data.CC)} r={10} fill="none" stroke={lineColors.CC.main} strokeWidth="1.5" opacity={0.4} style={{ pointerEvents: 'none' }} />
-                                        <circle cx={x} cy={getY(data.FC)} r={10} fill="none" stroke={lineColors.FC.main} strokeWidth="1.5" opacity={0.4} style={{ pointerEvents: 'none' }} />
-                                        <circle cx={x} cy={getY(data.PC)} r={10} fill="none" stroke={lineColors.PC.main} strokeWidth="1.5" opacity={0.4} style={{ pointerEvents: 'none' }} />
+                                        <circle cx={x} cy={getY(data.CC)} r={8} fill="none" stroke={lineColors.CC.main} strokeWidth="1.5" opacity={0.4} />
+                                        <circle cx={x} cy={getY(data.FC)} r={8} fill="none" stroke={lineColors.FC.main} strokeWidth="1.5" opacity={0.4} />
+                                        <circle cx={x} cy={getY(data.PC)} r={8} fill="none" stroke={lineColors.PC.main} strokeWidth="1.5" opacity={0.4} />
                                     </>
                                 )}
 
