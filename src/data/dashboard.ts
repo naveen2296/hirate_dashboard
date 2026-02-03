@@ -56,7 +56,7 @@ export const statsData: StatCard[] = [
         title: 'Average Rating',
         value: 9.28,
         description: 'Overall project average rating is 9.28 for FY 25-26',
-        trend: { value: 0.54, isPositive: false },
+        trend: { value: 0.54, isPositive: true },
         color: 'pink',
         icon: 'star'
     }
