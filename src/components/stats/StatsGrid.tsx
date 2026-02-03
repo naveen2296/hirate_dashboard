@@ -75,7 +75,7 @@ export function StatsGrid() {
                                             ) : (
                                                 <TrendingDown className="w-3 h-3" />
                                             )}
-                                            <span>{stat.trend.value > 0 ? '+' : ''}{stat.trend.value}%</span>
+                                            <span>{stat.trend.isPositive ? '+' : '-'}{Math.abs(stat.trend.value)}%</span>
                                         </div>
                                     )}
                                 </div>
