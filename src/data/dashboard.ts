@@ -9,6 +9,7 @@ export interface StatCard {
     trend?: {
         value: number;
         isPositive: boolean;
+        status: 'rise' | 'fall';
     };
     color: 'green' | 'blue' | 'purple' | 'orange' | 'cyan' | 'pink';
     icon: string;
@@ -29,7 +30,7 @@ export const statsData: StatCard[] = [
         value: 9,
         subtitle: 'FY 25-26',
         description: 'So far 9 months audited and continuing',
-        trend: { value: 77, isPositive: true },
+        trend: { value: 77, isPositive: true, status: 'rise' },
         color: 'blue',
         icon: 'calendar'
     },
@@ -47,7 +48,7 @@ export const statsData: StatCard[] = [
         value: '12K+',
         subtitle: '130K+ parameters',
         description: '12k+ issues were found upon 130k+ parameters in month of December 2025',
-        trend: { value: 0.27, isPositive: true },
+        trend: { value: 0.27, isPositive: true, status: 'rise' },
         color: 'cyan',
         icon: 'alert-triangle'
     },
@@ -56,7 +57,7 @@ export const statsData: StatCard[] = [
         title: 'Average Rating',
         value: 9.28,
         description: 'Overall project average rating is 9.28 for FY 25-26',
-        trend: { value: 0.54, isPositive: true },
+        trend: { value: 0.54, isPositive: false, status: 'fall' },
         color: 'pink',
         icon: 'star'
     }
