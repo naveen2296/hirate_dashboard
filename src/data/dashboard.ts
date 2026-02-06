@@ -9,7 +9,7 @@ export interface StatCard {
     trend?: {
         value: number;
         isPositive: boolean;
-        status: 'rise' | 'fall' | 'neutral';
+        status: 'rise' | 'fall';
     };
     color: 'green' | 'blue' | 'purple' | 'orange' | 'cyan' | 'pink';
     icon: string;
@@ -106,7 +106,7 @@ export const insightsData: InsightCard[] = [
 export interface ProjectMarker {
     code: string;
     name: string;
-    status: 'rise' | 'fall' | 'neutral';
+    status: 'rise' | 'fall';
     rating: number;
     prevRating: number;
     x: number;
@@ -312,7 +312,7 @@ export const pyramidRankings: RankingProject[][] = [
 // Live ticker data
 export const tickerData = [
     { code: 'APEL', value: 8.82, change: 0.71, isPositive: true, status: 'rise' },
-    { code: 'BFHL', value: 9.41, change: 0.00, isPositive: true, status: 'neutral' },
+    { code: 'BFHL', value: 9.41, change: 0.00, isPositive: true, status: 'rise' },
     { code: 'BWHPL', value: 8.97, change: 0.31, isPositive: true, status: 'rise' },
     { code: 'DATRL', value: 8.93, change: 0.85, isPositive: true, status: 'rise' },
     { code: 'FRHL', value: 8.81, change: 0.12, isPositive: true, status: 'rise' },
