@@ -84,7 +84,7 @@ export function Header() {
                                 className="flex items-center gap-2"
                             >
                                 <div className="px-3 py-1.5 rounded-full bg-green-500/20 border border-green-500/30">
-                                    <span className="text-xs font-semibold text-green-400">DECEMBER</span>
+                                    <span className="text-xs font-semibold text-green-400">JANUARY</span>
                                 </div>
                                 <div className="px-2 py-1 rounded-lg bg-white/5 border border-white/10">
                                     <span className="text-[10px] text-white/60">FY 25-26</span>

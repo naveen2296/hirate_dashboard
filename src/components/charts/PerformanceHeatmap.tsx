@@ -81,9 +81,9 @@ export function PerformanceHeatmap() {
             <div className="flex gap-1 mb-2">
                 {[
                     { key: 'all', label: 'All', count: allParameters.length },
-                    { key: 'top', label: '9.5+', count: topCount },
-                    { key: 'onTrack', label: '9.0-9.5', count: heatmapData.onTrack.length },
-                    { key: 'attention', label: '<9.0', count: attentionCount }
+                    { key: 'top', label: 'Top (≥9.5)', count: topCount },
+                    { key: 'onTrack', label: 'On Track (9-9.5)', count: heatmapData.onTrack.length },
+                    { key: 'attention', label: 'Attention (<9)', count: attentionCount }
                 ].map(tab => (
                     <button
                         key={tab.key}
@@ -108,9 +108,9 @@ export function PerformanceHeatmap() {
                         <span className="text-white/40">Low→High</span>
                     </div>
                     <span className="text-white/30">|</span>
-                    <span className="text-emerald-400">● Excellent: 9.5+</span>
-                    <span className="text-lime-400">● Good: 9.0-9.5</span>
-                    <span className="text-orange-400">● Attention: &lt;9.0</span>
+                    <span className="text-emerald-400">● Top: ≥9.5</span>
+                    <span className="text-lime-400">● On Track: 9-9.5</span>
+                    <span className="text-orange-400">● Attention: &lt;9</span>
                 </div>
                 <span className="text-white/40">Avg: <span className="text-cyan-400 font-bold">{avgRating}</span></span>
             </div>

@@ -7,7 +7,7 @@ export function IndiaMap() {
     return (
         <div className="relative w-full h-full">
             <h3 className="text-sm font-semibold text-white/90 mb-2">Rise & Fall Map</h3>
-            <p className="text-[10px] text-white/50 mb-3">Project Performance Dec 2025</p>
+            <p className="text-[10px] text-white/50 mb-3">Project Performance Jan 2026</p>
 
             <div className="relative w-full h-[260px]">
                 {/* India Map Background */}
@@ -41,8 +41,8 @@ export function IndiaMap() {
                             {/* Marker dot */}
                             <div
                                 className={`w-2.5 h-2.5 rounded-full border border-white/50 ${marker.status === 'rise'
-                                        ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]'
-                                        : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'
+                                    ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]'
+                                    : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'
                                     }`}
                             />
 

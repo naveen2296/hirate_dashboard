@@ -6,10 +6,10 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 
 // TAR Count data - waterfall style with rise/fall percentages
 const chartData = [
-    { rating: '10', count: 117525, label: 'Rating 10', change: null },
-    { rating: '5', count: 7289, label: 'Rating 5', change: 4.2 },
-    { rating: '1', count: 5389, label: 'Rating 1', change: -5.1 },
-    { rating: 'Total', count: 130203, isTotal: true, label: 'Total Issues', change: null }
+    { rating: '10', count: 135329, label: 'Rating 10', change: null },
+    { rating: '5', count: 8524, label: 'Rating 5', change: 14.5 },
+    { rating: '1', count: 6462, label: 'Rating 1', change: 16.6 },
+    { rating: 'Total', count: 150315, isTotal: true, label: 'Total Issues', change: null }
 ];
 
 interface TooltipData {
@@ -93,13 +93,13 @@ export function IssuesChart() {
                     <div className="flex items-center gap-1">
                         <span className="text-white/60">5:</span>
                         <TrendingUp className="w-3 h-3 text-green-400" />
-                        <span className="font-semibold text-green-400">+4.2%</span>
+                        <span className="font-semibold text-green-400">+14.5%</span>
                     </div>
                     {/* Rating 1 fall */}
                     <div className="flex items-center gap-1">
                         <span className="text-white/60">1:</span>
-                        <TrendingDown className="w-3 h-3 text-red-400" />
-                        <span className="font-semibold text-red-400">-5.1%</span>
+                        <TrendingUp className="w-3 h-3 text-green-400" />
+                        <span className="font-semibold text-green-400">+16.6%</span>
                     </div>
                 </div>
             </div>
