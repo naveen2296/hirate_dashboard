@@ -315,7 +315,8 @@ body {
 
 .number-animate {
   font-variant-numeric: tabular-nums;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-feature-settings: 'zero' off;
 }
 
 .recharts-cartesian-grid-horizontal line,
