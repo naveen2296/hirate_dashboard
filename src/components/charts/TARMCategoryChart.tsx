@@ -5,13 +5,13 @@ import { motion } from 'framer-motion';
 // Category data - Green if above benchmark, Orange if below (attention)
 // offsetX/offsetY: Adjust individual benchmark line position for each category
 const chartData = [
-    { category: 'Roadways', actual: 9.53, benchmark: 9.36, offsetX: 0, offsetY: 35 },
-    { category: 'Road Signage', actual: 9.48, benchmark: 9.39, offsetX: 0, offsetY: 40 },
-    { category: 'Structures', actual: 9.49, benchmark: 9.31, offsetX: 0, offsetY: 50 },
-    { category: 'Landscaping', actual: 7.64, benchmark: 7.22, offsetX: 0, offsetY: 65 },
-    { category: 'ATMS', actual: 9.77, benchmark: 9.50, offsetX: 0, offsetY: 30 },
-    { category: 'Project Facilities', actual: 8.51, benchmark: 8.99, offsetX: 0, offsetY: 40 },
-    { category: 'TMS', actual: 9.92, benchmark: 9.61, offsetX: 0, offsetY: 25 }
+    { category: 'Roadways', actual: 9.59, benchmark: 9.29, offsetX: 0, offsetY: 35 },
+    { category: 'Road Signage', actual: 9.46, benchmark: 9.37, offsetX: 0, offsetY: 40 },
+    { category: 'Structures', actual: 9.41, benchmark: 9.24, offsetX: 0, offsetY: 50 },
+    { category: 'Landscaping', actual: 8.67, benchmark: 7.10, offsetX: 0, offsetY: 65 },
+    { category: 'ATMS', actual: 9.74, benchmark: 9.68, offsetX: 0, offsetY: 30 },
+    { category: 'Project Facilities', actual: 8.38, benchmark: 8.67, offsetX: 0, offsetY: 30 },
+    { category: 'TMS', actual: 9.95, benchmark: 9.78, offsetX: 0, offsetY: 25 }
 ];
 
 export function TARMCategoryChart() {

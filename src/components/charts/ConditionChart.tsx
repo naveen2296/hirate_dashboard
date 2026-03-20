@@ -10,7 +10,8 @@ const chartData = [
     { month: 'Oct', CC: 9.48, FC: 9.04, PC: 9.13 },
     { month: 'Nov', CC: 9.58, FC: 9.23, PC: 9.22 },
     { month: 'Dec', CC: 9.66, FC: 9.21, PC: 9.43 },
-    { month: 'Jan', CC: 9.64, FC: 9.29, PC: 9.25 }
+    { month: 'Jan', CC: 9.64, FC: 9.29, PC: 9.25 },
+    { month: 'Feb', CC: 9.70, FC: 9.19, PC: 9.32 },
 ];
 
 // Line colors for each metric
@@ -34,19 +35,20 @@ export function ConditionChart() {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const minY = 8.9;
-    const maxY = 9.7;
+    const maxY = 9.8;
     const chartHeight = 200;
     const chartWidth = 340;
-    const paddingX = 35;
+    const paddingX = 30;
     const paddingTop = 15;
     const paddingBottom = 50;
 
     // Calculate rise/fall percentages (Dec to Jan)
     const decData = chartData[3];
     const janData = chartData[4];
-    const ccChange = ((janData.CC - decData.CC) / janData.CC) * 100;
-    const fcChange = ((janData.FC - decData.FC) / janData.FC) * 100;
-    const pcChange = ((janData.PC - decData.PC) / janData.PC) * 100;
+    const febData = chartData[5];
+    const ccChange = ((febData.CC - janData.CC) / janData.CC) * 100;
+    const fcChange = ((febData.FC - janData.FC) / janData.FC) * 100;
+    const pcChange = ((febData.PC - janData.PC) / janData.PC) * 100;
     const avgChange = (ccChange + fcChange + pcChange) / 3;
 
     const getY = (value: number) => {
