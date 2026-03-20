@@ -36,10 +36,10 @@ export function ConditionChart() {
 
     const minY = 8.9;
     const maxY = 9.8;
-    const chartHeight = 200;
+    const chartHeight = 160;
     const chartWidth = 340;
-    const paddingX = 30;
-    const paddingTop = 15;
+    const paddingX = 20;
+    const paddingTop = 5;
     const paddingBottom = 50;
 
     // Calculate rise/fall percentages (Dec to Jan)
@@ -145,7 +145,7 @@ export function ConditionChart() {
                 </div>
             </motion.div>
 
-            <div className="h-[200px] relative">
+            <div className="h-[200px] relative overflow-visible">
                 <svg
                     viewBox={`0 0 ${chartWidth} ${paddingTop + chartHeight + paddingBottom}`}
                     className="w-full h-full"
@@ -445,18 +445,57 @@ export function ConditionChart() {
                                 )}
 
                                 {/* Value labels - always visible */}
-                                <motion.text x={x} y={getY(data.CC) - 10} textAnchor="middle" fill={lineColors.CC.main} fontSize="11" fontWeight="bold"
-                                    initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.0 + i * 0.1 }}>
-                                    {data.CC.toFixed(2)}
-                                </motion.text>
-                                <motion.text x={x} y={getY(data.FC) - 10} textAnchor="middle" fill={lineColors.FC.main} fontSize="11" fontWeight="bold"
-                                    initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.05 + i * 0.1 }}>
-                                    {data.FC.toFixed(2)}
-                                </motion.text>
-                                <motion.text x={x} y={getY(data.PC) + 20} textAnchor="middle" fill={lineColors.PC.main} fontSize="11" fontWeight="bold"
-                                    initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 + i * 0.1 }}>
-                                    {data.PC.toFixed(2)}
-                                </motion.text>
+                                {(() => {
+                                    const ccY = getY(data.CC);
+                                    const fcY = getY(data.FC);
+                                    const pcY = getY(data.PC);
+                                    const minGap = 14; // minimum gap between labels
+
+                                    // CC always above its point
+                                    let ccLabelY = ccY - 10;
+
+                                    // FC default above its point, PC default below
+                                    let fcLabelY = fcY - 10;
+                                    let pcLabelY = pcY + 20;
+
+                                    // Check if FC and PC labels overlap
+                                    // FC label is above FC point, PC label is below PC point
+                                    // If FC point is below PC point (FC value < PC value), they can collide
+                                    if (Math.abs(fcY - pcY) < 30) {
+                                        // Values are too close - push FC label above and PC label below with more offset
+                                        if (fcY > pcY) {
+                                            // FC is below PC (FC value < PC value)
+                                            fcLabelY = fcY + 18;
+                                            pcLabelY = pcY - 10;
+                                        } else {
+                                            // FC is above PC (FC value > PC value)
+                                            fcLabelY = fcY - 10;
+                                            pcLabelY = pcY + 20;
+                                        }
+                                    }
+
+                                    // Also check CC vs FC overlap
+                                    if (Math.abs(ccLabelY - fcLabelY) < minGap) {
+                                        fcLabelY = fcLabelY + minGap;
+                                    }
+
+                                    return (
+                                        <>
+                                            <motion.text x={x} y={ccLabelY} textAnchor="middle" fill={lineColors.CC.main} fontSize="11" fontWeight="bold"
+                                                initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.0 + i * 0.1 }}>
+                                                {data.CC.toFixed(2)}
+                                            </motion.text>
+                                            <motion.text x={x} y={fcLabelY} textAnchor="middle" fill={lineColors.FC.main} fontSize="11" fontWeight="bold"
+                                                initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.05 + i * 0.1 }}>
+                                                {data.FC.toFixed(2)}
+                                            </motion.text>
+                                            <motion.text x={x} y={pcLabelY} textAnchor="middle" fill={lineColors.PC.main} fontSize="11" fontWeight="bold"
+                                                initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 + i * 0.1 }}>
+                                                {data.PC.toFixed(2)}
+                                            </motion.text>
+                                        </>
+                                    );
+                                })()}
 
                                 {/* Triangle Rise/Fall indicators on last point */}
                                 {isLast && (
