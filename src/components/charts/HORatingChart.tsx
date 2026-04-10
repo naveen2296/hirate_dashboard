@@ -12,6 +12,7 @@ const chartData = [
     { month: 'Dec', rating: 8.88 },
     { month: 'Jan', rating: 9.02 },
     { month: 'Feb', rating: 9.16 },
+    { month: 'Mar', rating: 9.22 },
 ];
 
 interface TooltipData {
@@ -27,7 +28,7 @@ export function HORatingChart() {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const minY = 8.75;
-    const maxY = 9.16;
+    const maxY = 9.26;
     const chartHeight = 200;
     const chartWidth = 340;
     const paddingX = 35;
@@ -38,7 +39,8 @@ export function HORatingChart() {
     const decData = chartData[3];
     const janData = chartData[4];
     const febData = chartData[5];
-    const ratingChange = ((febData.rating - janData.rating) / janData.rating) * 100;
+    const marData = chartData[6];
+    const ratingChange = ((marData.rating - febData.rating) / febData.rating) * 100;
 
     const getY = (value: number) => {
         return paddingTop + ((maxY - value) / (maxY - minY)) * chartHeight;

@@ -5,13 +5,13 @@ import { motion } from 'framer-motion';
 // Category data - Green if above benchmark, Orange if below (attention)
 // offsetX/offsetY: Adjust individual benchmark line position for each category
 const chartData = [
-    { category: 'Roadways', actual: 9.59, benchmark: 9.29, offsetX: 0, offsetY: 35 },
-    { category: 'Road Signage', actual: 9.46, benchmark: 9.37, offsetX: 0, offsetY: 40 },
-    { category: 'Structures', actual: 9.41, benchmark: 9.24, offsetX: 0, offsetY: 50 },
-    { category: 'Landscaping', actual: 8.67, benchmark: 7.10, offsetX: 0, offsetY: 65 },
-    { category: 'ATMS', actual: 9.74, benchmark: 9.68, offsetX: 0, offsetY: 30 },
-    { category: 'Project Facilities', actual: 8.38, benchmark: 8.67, offsetX: 0, offsetY: 30 },
-    { category: 'TMS', actual: 9.95, benchmark: 9.78, offsetX: 0, offsetY: 25 }
+    { category: 'Roadways', actual: 9.62, prevMonth: 9.59, divisionAvg: 9.34, offsetX: 0, offsetY: 35 },
+    { category: 'Road Signage', actual: 9.63, prevMonth: 9.46, divisionAvg: 9.41, offsetX: 0, offsetY: 40 },
+    { category: 'Structures', actual: 9.34, prevMonth: 9.41, divisionAvg: 9.26, offsetX: 0, offsetY: 45 },
+    { category: 'Landscaping', actual: 8.85, prevMonth: 8.67, divisionAvg: 7.37, offsetX: 0, offsetY: 65 },
+    { category: 'ATMS', actual: 9.94, prevMonth: 9.74, divisionAvg: 9.72, offsetX: 0, offsetY: 30 },
+    { category: 'Project Facilities', actual: 8.65, prevMonth: 8.38, divisionAvg: 8.67, offsetX: 0, offsetY: 30 },
+    { category: 'TMS', actual: 9.88, prevMonth: 9.95, divisionAvg: 9.80, offsetX: 0, offsetY: 25 }
 ];
 
 export function TARMCategoryChart() {
@@ -54,7 +54,7 @@ export function TARMCategoryChart() {
         let path = '';
         chartData.forEach((d, i) => {
             const x = getX(i) + (d.offsetX || 0);
-            const y = getY(d.benchmark) + benchmarkLineOffsetY + (d.offsetY || 0);
+            const y = getY(d.divisionAvg) + benchmarkLineOffsetY + (d.offsetY || 0);
             const halfBar = barWidth / 2 + benchmarkLineOffsetX;
 
             if (i === 0) {
@@ -64,7 +64,7 @@ export function TARMCategoryChart() {
 
             if (i < chartData.length - 1) {
                 const nextD = chartData[i + 1];
-                const nextY = getY(nextD.benchmark) + benchmarkLineOffsetY + (nextD.offsetY || 0);
+                const nextY = getY(nextD.divisionAvg) + benchmarkLineOffsetY + (nextD.offsetY || 0);
                 path += ` L ${x + halfBar},${nextY}`;
                 const nextX = getX(i + 1) + (nextD.offsetX || 0);
                 path += ` L ${nextX - halfBar},${nextY}`;
@@ -132,8 +132,11 @@ export function TARMCategoryChart() {
                         const x = getX(i) - barWidth / 2;
                         const barHeight = getBarHeight(data.actual);
                         const y = baseY - barHeight;
-                        const isAboveBenchmark = data.actual >= data.benchmark;
-                        const delta = data.actual - data.benchmark;
+                        // Bar color: based on Division Average line
+                        const isAboveDivisionAvg = data.actual >= data.divisionAvg;
+                        // Percentage & trending: based on previous month
+                        const delta = data.actual - data.prevMonth;
+                        const isImproved = delta >= 0;
 
                         return (
                             <g key={data.category}>
@@ -145,7 +148,7 @@ export function TARMCategoryChart() {
                                     height={barHeight}
                                     rx={6}
                                     ry={6}
-                                    fill={isAboveBenchmark ? 'url(#greenBarGrad)' : 'url(#redBarGrad)'}
+                                    fill={isAboveDivisionAvg ? 'url(#greenBarGrad)' : 'url(#redBarGrad)'}
                                     initial={{ height: 0, y: baseY, opacity: 0 }}
                                     animate={{ height: barHeight, y: y, opacity: 1 }}
                                     transition={{
@@ -170,9 +173,9 @@ export function TARMCategoryChart() {
                                         ease: "easeOut"
                                     }}
                                 >
-                                    {/* Trending icon */}
+                                    {/* Trending icon - based on prev month */}
                                     <g transform={`translate(${getX(i) - 28}, ${y - 26})`}>
-                                        {isAboveBenchmark ? (
+                                        {isImproved ? (
                                             <path
                                                 d="M2 8l4-4 4 4 6-6m0 0v4m0-4h-4"
                                                 stroke="#4ade80"
@@ -192,16 +195,16 @@ export function TARMCategoryChart() {
                                             />
                                         )}
                                     </g>
-                                    {/* Percentage text */}
+                                    {/* Percentage text - based on prev month */}
                                     <text
                                         x={getX(i) + 8}
                                         y={y - 18}
                                         textAnchor="middle"
-                                        fill={isAboveBenchmark ? '#4ade80' : '#f97316'}
+                                        fill={isImproved ? '#4ade80' : '#f97316'}
                                         fontSize="9"
                                         fontWeight="bold"
                                     >
-                                        {isAboveBenchmark ? '+' : ''}{((delta / data.benchmark) * 100).toFixed(1)}%
+                                        {isImproved ? '+' : ''}{((delta / data.prevMonth) * 100).toFixed(1)}%
                                     </text>
                                 </motion.g>
 

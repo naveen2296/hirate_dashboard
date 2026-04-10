@@ -6,10 +6,10 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 
 // TAR Count data - waterfall style with rise/fall percentages
 const chartData = [
-    { rating: '10', count: 132180, label: 'Rating 10', change: null },
-    { rating: '5', count: 8549, label: 'Rating 5', change: 0.3 },
-    { rating: '1', count: 6738, label: 'Rating 1', change: 4.0 },
-    { rating: 'Total', count: 147467, isTotal: true, label: 'Total Issues', change: null }
+    { rating: '10', count: 131476, label: 'Rating 10', change: null },
+    { rating: '5', count: 7765, label: 'Rating 5', change: -9.18 },
+    { rating: '1', count: 4453, label: 'Rating 1', change: -33.34 },
+    { rating: 'Total', count: 143694, isTotal: true, label: 'Total Issues', change: null }
 ];
 
 interface TooltipData {
